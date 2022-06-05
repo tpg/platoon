@@ -1,0 +1,37 @@
+{
+    "name": "thepublicgood/platoon",
+    "description": "Zero-downtime deployment tools",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "THEPUBLICGOOD",
+            "email": "makers@thepublicgood.dev"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "TPG\\Platoon\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "TPG\\Tests\\": "tests/"
+        }
+    },
+    "require": {
+        "php": "^8.1",
+        "laravel/envoy": "^2.8",
+        "laravel/framework": "^9.16",
+        "spatie/laravel-data": "^1.5"
+    },
+    "require-dev": {
+        "roave/security-advisories": "dev-latest",
+        "phpunit/phpunit": "^9.5",
+        "orchestra/testbench": "^7.5"
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    }
+}
