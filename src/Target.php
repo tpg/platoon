@@ -53,13 +53,13 @@ class Target extends Data
             throw new \RuntimeException('No defined path named '.$pathName);
         }
 
-        $parts = [
+        $parts = collect([
             $this->path,
             $this->paths[$pathName],
             $suffix,
-        ];
+        ]);
 
-        return implode('/', $parts);
+        return implode('/', $parts->whereNotNull()->toArray());
     }
 
     public function composer(): string

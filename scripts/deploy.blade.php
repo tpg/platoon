@@ -29,12 +29,9 @@ repo and link the .env file and storage directory.
 
 cd {{ $target->paths('releases') }}
 git clone --depth 50 -b {{ $target->branch }} "{{ $helper->repo() }}" {{ $release }}
-rm -rf {{ $target->paths('releases', $release) }}/storage
-rm -f {{ $target->paths('releases', $release) }}/.env
-ln -nfs {{ $target->path }}/.env {{ $target->paths('releases', $release) }}/.env
-ln -nfs {{ $target->path }}/storage {{ $target->paths('releases', $release) }}/storage
 
 @endtask
+
 
 {{-- Prep task
 -------------------------------------------------------------------
@@ -43,13 +40,21 @@ Prepare the target directory for the project.
 @task('prep', ['on' => 'live'])
 
 cd {{ $target->path }}
+
 if [[ ! -d "{{ $target->paths('storage') }}" ]]
 then
     cp -r {{ $target->paths('releases', $release) }}/storage {{ $target->path }}/storage
     cp {{ $target->paths('releases', $release) }}/.env.example {{ $target->path }}/.env
 fi
 
+rm -rf {{ $target->paths('releases', $release) }}/storage
+rm -f {{ $target->paths('releases', $release) }}/.env
+
+ln -nfs {{ $target->path }}/.env {{ $target->paths('releases', $release) }}/.env
+ln -nfs {{ $target->path }}/storage {{ $target->paths('releases', $release) }}/storage
+
 @endtask
+
 
 {{-- Composer dependencies task
 -------------------------------------------------------------------
@@ -63,6 +68,7 @@ cd {{ $target->paths('releases', $release) }}
 {{ $target->composer() }} install --prefer-dist --no-dev --no-progress
 
 @endtask
+
 
 {{-- Assets task
 -------------------------------------------------------------------
@@ -78,6 +84,7 @@ otherwise you'll get unexpected results.
 
 @endtask
 
+
 {{-- Database migrations
 -------------------------------------------------------------------
 You can migrate database chages automatically. However this
@@ -85,11 +92,13 @@ task is OFF by default as it could be potentially dangerous. You
 can turn it on in the config.
 -------------------------------------------------------------------}}
 @task('database', ['on' => 'live'])
+echo "Checking if database migrations need to be run..."
 @if ($target->migrate)
     cd {{ $target->paths('releases', $release) }}
     {{ $target->artisan() }} migrate --force
 @endif
 @endtask
+
 
 {{-- The "Make it live" task
 -------------------------------------------------------------------
@@ -101,7 +110,22 @@ symlink to the new deployment from the "serve" path.
 ln -nfs {{ $target->paths('releases', $release) }} {{ $target->paths('serve') }}
 cd {{ $target->paths('serve') }}
 {{ $target->artisan() }} storage:link
-{{ $target->artisan() }} horizon:publish
+
+@endtask
+
+
+{{-- Clean up old deployments
+-------------------------------------------------------------------
+Clean up any old deployments that are still on the target.
+We'll leave the previous one intact just in case you need it.
+-------------------------------------------------------------------}}
+@task('cleanup', ['on' => 'live'])
+
+cd {{ $target->paths('releases') }}
+for dir in */;
+do
+rm -rf $dir;
+done
 
 @endtask
 
@@ -115,4 +139,5 @@ This story will run through all the individual deployment
     dependencies
     database
     live
+    cleanup
 @endstory
