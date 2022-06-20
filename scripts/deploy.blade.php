@@ -90,7 +90,11 @@ then
     fi
 
     {{ $target->php }} composer-setup.php
-    mv composer.phar {{ $target->composer }}
+
+    if [ "{{ $target->composer }}" != "{{ $target->path }}/composer.phar" ]
+    then
+        mv composer.phar {{ $target->composer }}
+    fi
     rm composer-setup.php
 fi
 @endtask
