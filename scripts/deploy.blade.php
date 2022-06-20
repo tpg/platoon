@@ -78,9 +78,9 @@ if [[ ! -f "{{ $target->composer }}" ]]
 then
     echo "Installing composer..."
     cd {{ $target->path }}
-    EXPECTED_CHECKSUM="$(php -r 'copy("https://composer.github.io/installer.sig", "php://stdout");')"
-    {{ $target->php }} "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-    ACTUAL_CHECKSUM="$(php -r "echo hash_file('sha384', 'composer-setup.php');")"
+    EXPECTED_CHECKSUM="$({{ $target->php }} -r 'copy("https://composer.github.io/installer.sig", "php://stdout");')"
+    {{ $target->php }} -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+    ACTUAL_CHECKSUM="$({{ $target->php }} -r "echo hash_file('sha384', 'composer-setup.php');")"
 
     if [ "$EXPECTED_CHECKSUM" != "$ACTUAL_CHECKSUM" ]
     then
