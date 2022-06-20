@@ -126,6 +126,12 @@ cd {{ $target->paths('serve') }}
 
 @endtask
 
+@task('finish', ['on' => 'local'])
+
+echo "Release {{ $release }} is now live."
+
+@endtask
+
 {{-- The "Deploy" story
 -------------------------------------------------------------------
 This story will run through all the individual deployment
@@ -137,4 +143,5 @@ This story will run through all the individual deployment
     database
     live
     cleanup
+    finish
 @endstory
