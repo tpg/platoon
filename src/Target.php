@@ -20,6 +20,7 @@ class Target extends Data
     public readonly string $composer;
     public readonly string $branch;
     public readonly bool $migrate;
+    public readonly array $assets;
 
     protected array $paths = [
         'releases' => 'releases',
@@ -42,6 +43,7 @@ class Target extends Data
         $this->composer = Arr::get($config, 'composer', 'composer');
         $this->branch = Arr::get($config, 'branch', 'main');
         $this->migrate = Arr::get($config, 'migrate', false);
+        $this->assets = Arr::get($config, 'assets', []) ?? [];
 
         $this->hostString = $this->getHostString();
     }
@@ -84,8 +86,10 @@ class Target extends Data
         return $this->php.' '.$this->paths('serve').'/artisan';
     }
 
-    public function assets(): array
+    public function assets(string $release): array
     {
-        return Arr::get($this->config, 'assets', []) ?? [];
+        return collect($this->assets)->mapWithKeys(
+            fn($dest, $source) => [$source => $this->username.'@'.$this->host.':'.$this->paths('releases', $release).'/'.$dest]
+        )->toArray();
     }
 }

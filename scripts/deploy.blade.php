@@ -119,11 +119,11 @@ Copy the specified assets onto the server. If you specify an
 entire directory, make sure the directory doesn't already exist,
 otherwise you'll get unexpected results.
 -------------------------------------------------------------------}}
-@task('assets', ['on' => 'live'])
+@task('assets', ['on' => 'local'])
 
-@foreach ($target->assets() as $sourcePath => $targetPath)
-    echo "Copying {{ $sourcePath }}..."
-    scp -P{{ $target->port }} -rq {{ $sourcePath }} {{ $targetPath }}
+@foreach ($target->assets($release) as $sourcePath => $targetPath)
+    echo "Copying {{ $sourcePath }} to {{ $targetPath }}..."
+    scp -P{{ $target->port }} -rq "{{ $sourcePath }}" "{{ $targetPath }}"
 @endforeach
 
 @endtask
@@ -186,6 +186,7 @@ This story will run through all the individual deployment
     prep
     composer
     dependencies
+    assets
     database
     live
     cleanup
