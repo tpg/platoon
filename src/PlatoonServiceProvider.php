@@ -22,12 +22,23 @@ class PlatoonServiceProvider extends ServiceProvider
             __DIR__.'/../scripts/deploy.blade.php' => base_path('Envoy.blade.php')
         ], 'platoon-script');
 
+        $this->bootCommands();
+    }
+
+    protected function bootCommands(): void
+    {
+        $commands = [
+            DeployCommand::class,
+            PublishCommand::class,
+        ];
+
+        if (! $this->app->environment('local')) {
+            $commands[] = CleanupCommand::class;
+        }
+
         if ($this->app->runningInConsole()) {
-            $this->commands([
-                CleanupCommand::class,
-                DeployCommand::class,
-                PublishCommand::class,
-            ]);
+
+            $this->commands($commands);
         }
     }
 

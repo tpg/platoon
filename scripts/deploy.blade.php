@@ -3,8 +3,8 @@
 {{-- Platoon Deployment Script
 -------------------------------------------------------------------
 This Envoy script is part of the Platoon deployment toolset.
-You can edit this file if you want, but your Platoon
-installation will overwrite it if you make changes later.
+You can edit this file if you want, but in most cases this
+should suite most projects.
 -------------------------------------------------------------------}}
 @setup
 
@@ -17,6 +17,17 @@ $target = $helper->target($server);
 @endsetup
 
 @servers(['local' => $helper->localhost, 'live' => $target->hostString])
+
+{{-- Build task
+-------------------------------------------------------------------
+If you need to build anything (like bundle JavaScript for
+production) then this is the place to do it.
+-------------------------------------------------------------------}}
+@task('build', ['on' => 'local'])
+
+# place your build tasks here
+
+@endtask
 
 {{-- Installation task
 -------------------------------------------------------------------
@@ -64,8 +75,13 @@ repo and link the .env file and storage directory.
 @task('dependencies', ['on' => 'live'])
 
 cd {{ $target->paths('releases', $release) }}
+if [[ ! -f "{{ $target->composer() }}" ]]
+then
+    curl -sS https://getcomposer.org/installer | {{ $target->php() }}
+fi
+
 {{ $target->composer() }} self-update
-{{ $target->composer() }} install --prefer-dist --no-dev --no-progress
+{{ $target->composer() }} install --prefer-dist --no-dev --no-progress --optimize-autoloader
 
 @endtask
 
@@ -137,6 +153,7 @@ echo "Release {{ $release }} is now live."
 This story will run through all the individual deployment
 -------------------------------------------------------------------}}
 @story('deploy')
+    build
     install
     prep
     dependencies
