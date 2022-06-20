@@ -67,6 +67,9 @@ php ./artisan platoon:deploy production
 
 If you don't specify a server, or there is no default set in your config file, Platoon will deploy to the first server in your targets array.
 
+## Some manual tasks
+Platoon can't do everything, I'm afraid. You'll need to set up your database yourself and any other
+
 ## Structure
 Platoon will create the following directory structure in the target directory path:
 
@@ -111,6 +114,25 @@ Whenever Platoon needs to run composer, it will construct the command like this:
 ## Cleaning up
 Platoon includes a `platoon:cleanup` command. You should never need to run this command and in-fact, is hidden when your applications environment is set to `local`. Once a deployment is completed, the `platoon:cleanup` command will remove any old releases on the server automatically. The current release and the previous release are left intact, so if you ever need to rollback, doing so would require linking the previous release as the `live` symbolic link.
 
+## Assets
+Platoon provides a simple solution for getting compiled assets onto the server without needing them to be committed to your repository. Simply add the assets to the `assets` array as a part of the target config. Each asset is keyed by the local path with a value representing the remote path relative to the release.
+
+For example, if you have a `build` directory in `public` that needs to be copied, you can set this up as:
+
+```php
+return [
+    "targets" => [
+        "staging" => [
+            "assets" => [
+                "public/build" => "public/build",
+            ]
+        ]
+    ]
+]
+```
+
+However, be warned, if you are copying entire directories, make sure the target directory doesn't already exist. In the example above, if the target `public/build` directory already exists, you'll end up with: `public/build/build` which is probably not what you want.
+
 ## The Envoy script
 Platoon comes with its own Envoy script. In most cases, you shouldn't need to alter the script, but if you feel like you need to, you can publish it to your project with:
 
@@ -120,34 +142,21 @@ php ./artisan vendor:publish --tag=platoon-script
 
 This will place an `Envoy.blade.php` file in your project folder. You can still use the `platoon:deploy` command and it will simply use your `Envoy.blade.php` file instead of it's own one.
 
-The Envoy script has 8 tasks that it runs through:
+The Envoy script has **10** tasks that it runs through:
 
-### 1. Build
-The build task is used to bundle JavaScript, or any other build steps you need to take. Platoon does not include any build steps by default, and you might want to run your build steps through your CI directly. If you do need to use this task, then you'll need to publish the Envoy script and edit the `build` task (hint: it's the first task in the file).
+1. **Build**: The build task is used to bundle JavaScript, or any other build steps you need to take. Platoon does not include any build steps by default, and you might want to run your build steps through your CI directly. If you do need to use this task, then you'll need to publish the Envoy script and edit the `build` task (hint: it's the first task in the file).
+2. **Install**: Clones the repository into a new release directory. It will also check if there is a `release` directory in the first place and create it if needed.
+3. **prep**: Checks if the `storage` directory has been moved. If not, then it assumes that this is the first time you're deploying to this target and it will move the `storage` directory and the `.env` file for you. It will then create symbolic links in the new release to the `storage` and `.env` locations in the project root.
+4. **composer**: Check if composer is installed. If not, it will download the composer installer, validate the checksum and use it to install composer to the specified composer location.
+5. **dependencies**: The `dependencies` step will install composer dependencies. The following flags are passed to the `composer install` command: `--prefer-dist --no-dev --no-progress --optimize-autoloader`
+6. **assets**: This task will copy any assets specified in the `assets` array in the config file. By default, this task will use `scp` to copy assets over an SSH connection.
+7. **database**: Migrates database changes, but only if you have set `migrate` to `true` in your config file. This can be a destructive task if you're not careful, so it might be better to run your migrations manually so you can check them first. If you're confident, then set it to `true` and the `migrate` command will be run with the `--force` flag.
+8. **live**: This is the last task to take the new release live. This step simply creates the `live` symbolic link to the new release. It will also run `artisan storage:link` to create a new link to the `storage/app/public` in the `public` directory.
+9. **cleanup**: Runs the `platoon:cleanup` command on the server. This will remove any old releases that may still be hanging around. By default the command will ensure at least 2 releases are available, but you can change this by passing a number to the `--keep` flag.
+10. **finish**: The last task will simply output the name of the release that is now live.
 
-### 2. Install
-The `install` task will clone the repository into a new release directory. It will also check if there is a `release` directory in the first place and create it if needed.
+## Credits
+- [Warrick Bayman](https://github.com/warrickbayman)
 
-### 3. prep
-The `prep` task will check to see if the `storage` directory has been moved. If not, then it assumes that this is the first time you're deploying to this target and it will move the `storage` directory and the `.env` file for you.
-
-It will then create symbolic links in the new release to the `storage` and `.env` locations in the project root.
-
-### 4. dependencies
-The `dependencies` step will install composer dependencies. The following flags are passed to the `composer install` command:
-
-```shell
---prefer-dist --no-dev --no-progress --optimize-autoloader
-```
-
-### 5. database
-The `database` task will migrate database changes, but only if you have set `migrate` to `true` in your config file. This can be a destructive task if you're not careful, so it might be better to run your migrations manually so you can check them first. If you're confident, then set it to `true` and the `migrate` command will be run with the `--force` flag.
-
-### 6. live
-This is the last task to take the new release live. This step simply creates the `live` symbolic link to the new release. It will also run `artisan storage:link` to create a new link to the `storage/app/public` in the `public` directory.
-
-### 7. cleanup
-The `cleanup` step will run the `platoon:cleanup` command on the server. This will remove any old releases that may still be hanging around. By default the command will ensure at least 2 releases are available, but you can change this by passing a number to the `--keep` flag.
-
-### 8. finish
-The last task will simply output the name of the release that is now live.
+## License
+The MIT License (MIT). See the [LICENSE.md]() file for more information.
