@@ -10,7 +10,7 @@ use TPG\Platoon\PlatoonServiceProvider;
 
 class PublishCommand extends Command
 {
-    protected $signature = 'platoon:publish';
+    protected $signature = 'platoon:publish {--force}';
 
     protected $description = 'Publish the platoon config and deployment scripts';
 
@@ -18,7 +18,7 @@ class PublishCommand extends Command
     {
         $this->call(VendorPublishCommand::class, [
             '--provider' => PlatoonServiceProvider::class,
-            '--force' => true,
+            '--force' => $this->option('force'),
         ]);
 
         return self::SUCCESS;

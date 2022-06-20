@@ -121,11 +121,8 @@ We'll leave the previous one intact just in case you need it.
 -------------------------------------------------------------------}}
 @task('cleanup', ['on' => 'live'])
 
-cd {{ $target->paths('releases') }}
-for dir in */;
-do
-rm -rf $dir;
-done
+cd {{ $target->paths('serve') }}
+{{ $target->artisan() }} platoon:cleanup --keep=2
 
 @endtask
 
