@@ -77,7 +77,7 @@ repo and link the .env file and storage directory.
 cd {{ $target->paths('releases', $release) }}
 if [[ ! -f "{{ $target->composer() }}" ]]
 then
-    curl -sS https://getcomposer.org/installer | {{ $target->php() }}
+    curl -sS https://getcomposer.org/installer | {{ $target->php }}
 fi
 
 {{ $target->composer() }} self-update
