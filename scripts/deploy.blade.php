@@ -89,7 +89,8 @@ then
         exit 1
     fi
 
-    {{ $target->php }} composer-setup.php --install-dir={{ $target->composer }}
+    {{ $target->php }} composer-setup.php
+    mv composer.phar {{ $target->composer }}
     rm composer-setup.php
 fi
 @endtask
