@@ -9,6 +9,8 @@ use Spatie\LaravelData\Data;
 
 class Target extends Data
 {
+    protected array $config;
+
     public readonly string $name;
     public readonly string $host;
     public readonly int $port;
@@ -29,6 +31,8 @@ class Target extends Data
 
     public function __construct(string $name, array $config)
     {
+        $this->config = $config;
+
         $this->name = $name;
         $this->host = Arr::get($config, 'host');
         $this->port = Arr::get($config, 'port', 22);
@@ -82,6 +86,6 @@ class Target extends Data
 
     public function assets(): array
     {
-        return [];
+        return Arr::get($this->config, 'assets', []) ?? [];
     }
 }
