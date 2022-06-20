@@ -90,6 +90,7 @@ then
     fi
 
     {{ $target->php }} composer-setup.php --install-dir={{ $target->composer }}
+    rm composer-setup.php
 fi
 @endtask
 
