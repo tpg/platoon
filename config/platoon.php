@@ -46,6 +46,9 @@ return [
             'composer' => '/opt/platoon/composer.phar',
             'branch' => 'master',
             'migrate' => false,
+            'assets' => [
+                // 'local' => 'remote',
+            ],
         ],
     ],
 ];

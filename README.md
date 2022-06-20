@@ -42,7 +42,8 @@ return [
             'php' => '/usr/bin/php',  
             'composer' => '/path/to/composer.phar',  
             'branch' => 'master',  
-            'migrate' => false,  
+            'migrate' => false,
+            'assets' => [],  
         ],
         'production' => [
             //...
