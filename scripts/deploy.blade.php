@@ -66,13 +66,13 @@ ln -nfs {{ $target->path }}/storage {{ $target->paths('releases', $release) }}/s
 
 @endtask
 
-
-{{-- Composer dependencies task
+{{-- Composer installation
 -------------------------------------------------------------------
-This task gets the software onto the server. It will clone the
-repo and link the .env file and storage directory.
+Check if composer exists at the specified path. If not, then
+download the latest release.
 -------------------------------------------------------------------}}
-@task('dependencies', ['on' => 'live'])
+@task('composer', ['on' => 'live'])
+# Check if composer exists and install it.
 
 if [[ ! -f "{{ $target->composer }}" ]]
 then
@@ -90,6 +90,14 @@ then
 
     {{ $target->php }} composer-setup.php --quiet --install-dir={{ $target->composer }}
 fi
+@endtask
+
+{{-- Composer dependencies task
+-------------------------------------------------------------------
+This task gets the software onto the server. It will clone the
+repo and link the .env file and storage directory.
+-------------------------------------------------------------------}}
+@task('dependencies', ['on' => 'live'])
 
 cd {{ $target->paths('releases', $release) }}
 {{ $target->composer() }} self-update
