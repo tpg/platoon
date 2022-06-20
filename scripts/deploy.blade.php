@@ -177,6 +177,7 @@ This story will run through all the individual deployment
     build
     install
     prep
+    composer
     dependencies
     database
     live
