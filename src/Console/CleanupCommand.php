@@ -39,8 +39,8 @@ class CleanupCommand extends Command
                     throw new \RuntimeException('Failed to complete cleanup');
                 }
 
+                $this->output->writeln('OK');
             });
-            $this->output->writeln('OK');
 
         }
 
