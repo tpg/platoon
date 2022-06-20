@@ -15,9 +15,6 @@ class DeployCommand extends Command
 
     public function handle(): int
     {
-        $exec = base_path('vendor/bin/envoy');
-        $script = 'vendor/thepublicgood/platoon/scripts/deploy.blade.php';
-
         $process = Process::fromShellCommandline($this->getCommand(), base_path());
 
         $process->setTty(Process::isTtySupported());
@@ -39,7 +36,11 @@ class DeployCommand extends Command
     protected function getCommand(): string
     {
         $exec = base_path('vendor/bin/envoy');
+
         $script = 'vendor/thepublicgood/platoon/scripts/deploy.blade.php';
+        if (file_exists(base_path('Envoy.blade.php'))) {
+            $script = 'Envoy.blade.php';
+        }
 
         return $exec.' run deploy --conf='.$script.' --server='.$this->argument('server');
     }

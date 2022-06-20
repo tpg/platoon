@@ -16,8 +16,11 @@ class PlatoonServiceProvider extends ServiceProvider
     {
         $this->publishes([
             __DIR__.'/../config/platoon.php' => config_path('platoon.php'),
-//            __DIR__.'/../scripts/deploy.blade.php' => base_path('deployment/Envoy.blade.php'),
-        ], 'platoon');
+        ], 'platoon-config');
+
+        $this->publishes([
+            __DIR__.'/../scripts/deploy.blade.php' => base_path('Envoy.blade.php')
+        ], 'platoon-script');
 
         if ($this->app->runningInConsole()) {
             $this->commands([
