@@ -10,7 +10,7 @@ use Symfony\Component\Process\Process;
 
 class CleanupCommand extends Command
 {
-    protected $signature = 'platoon:cleanup {--keep|k=2 : Number if deployments to keep installed}';
+    protected $signature = 'platoon:cleanup {--k|keep=2 : Number if deployments to keep installed}';
 
     protected $description = 'Clean up old releases.';
 
