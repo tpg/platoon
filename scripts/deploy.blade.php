@@ -95,6 +95,7 @@ otherwise you'll get unexpected results.
 @task('assets', ['on' => 'live'])
 
 @foreach ($target->assets() as $sourcePath => $targetPath)
+    echo "Copying {{ $sourcePath }}..."
     scp -P{{ $target->port }} -rq {{ $sourcePath }} {{ $targetPath }}
 @endforeach
 
