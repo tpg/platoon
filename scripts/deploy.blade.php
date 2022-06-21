@@ -36,6 +36,7 @@ repo and link the .env file and storage directory.
 -------------------------------------------------------------------}}
 @task('install', ['on' => 'live'])
 
+echo "Installing."
 [[ ! -d "{{ $target->paths('releases') }}" ]] && mkdir {{ $target->paths('releases') }}
 
 cd {{ $target->paths('releases') }}
@@ -50,6 +51,7 @@ Prepare the target directory for the project.
 -------------------------------------------------------------------}}
 @task('prep', ['on' => 'live'])
 
+echo "Preparing installation."
 cd {{ $target->path }}
 
 if [[ ! -d "{{ $target->paths('storage') }}" ]]
@@ -72,11 +74,12 @@ Check if composer exists at the specified path. If not, then
 download the latest release.
 -------------------------------------------------------------------}}
 @task('composer', ['on' => 'live'])
+
 # Check if composer exists and install it.
 
 if [[ ! -f "{{ $target->composer }}" ]]
 then
-    echo "Installing composer..."
+    echo "Installing composer."
     cd {{ $target->path }}
     EXPECTED_CHECKSUM="$({{ $target->php }} -r 'copy("https://composer.github.io/installer.sig", "php://stdout");')"
     {{ $target->php }} -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
@@ -97,6 +100,7 @@ then
     fi
     rm composer-setup.php
 fi
+
 @endtask
 
 {{-- Composer dependencies task
@@ -105,6 +109,8 @@ This task gets the software onto the server. It will clone the
 repo and link the .env file and storage directory.
 -------------------------------------------------------------------}}
 @task('dependencies', ['on' => 'live'])
+
+echo "Installing composer dependencies."
 
 cd {{ $target->paths('releases', $release) }}
 {{ $target->composer() }} self-update
@@ -121,8 +127,9 @@ otherwise you'll get unexpected results.
 -------------------------------------------------------------------}}
 @task('assets', ['on' => 'local'])
 
+echo "Installing assets."
 @foreach ($target->assets($release) as $sourcePath => $targetPath)
-    echo "Copying {{ $sourcePath }} to {{ $targetPath }}..."
+    echo "Copying {{ $sourcePath }}."
     scp -P{{ $target->port }} -rq "{{ $sourcePath }}" "{{ $targetPath }}"
 @endforeach
 
@@ -136,8 +143,10 @@ task is OFF by default as it could be potentially dangerous. You
 can turn it on in the config.
 -------------------------------------------------------------------}}
 @task('database', ['on' => 'live'])
-echo "Checking if database migrations need to be run..."
+
+# Only run this if we are allowed to migrate
 @if ($target->migrate)
+    echo "Running database migrations."
     cd {{ $target->paths('releases', $release) }}
     {{ $target->artisan() }} migrate --force
 @endif
@@ -151,6 +160,7 @@ symlink to the new deployment from the "serve" path.
 -------------------------------------------------------------------}}
 @task('live', ['on' => 'live'])
 
+echo "Going live."
 ln -nfs {{ $target->paths('releases', $release) }} {{ $target->paths('serve') }}
 cd {{ $target->paths('serve') }}
 {{ $target->artisan() }} storage:link
@@ -165,6 +175,7 @@ We'll leave the previous one intact just in case you need it.
 -------------------------------------------------------------------}}
 @task('cleanup', ['on' => 'live'])
 
+echo "Cleaning up."
 cd {{ $target->paths('serve') }}
 {{ $target->artisan() }} platoon:cleanup --keep=2
 
