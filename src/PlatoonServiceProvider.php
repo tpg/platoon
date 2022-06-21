@@ -7,6 +7,7 @@ namespace TPG\Platoon;
 use Illuminate\Support\ServiceProvider;
 use TPG\Platoon\Console\CleanupCommand;
 use TPG\Platoon\Console\DeployCommand;
+use TPG\Platoon\Console\FinishCommand;
 use TPG\Platoon\Console\PublishCommand;
 use TPG\Platoon\Contracts\PlatoonContract;
 
@@ -33,7 +34,11 @@ class PlatoonServiceProvider extends ServiceProvider
         ];
 
         if (! $this->app->environment('local')) {
-            $commands[] = CleanupCommand::class;
+            $commands = [
+                ...$commands,
+                CleanupCommand::class,
+                FinishCommand::class,
+            ];
         }
 
         if ($this->app->runningInConsole()) {

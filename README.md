@@ -42,8 +42,7 @@ return [
             'php' => '/usr/bin/php',  
             'composer' => '/path/to/composer.phar',  
             'branch' => 'master',  
-            'migrate' => false,
-            'assets' => [],  
+            'migrate' => false,  
         ],
         'production' => [
             //...
@@ -143,7 +142,9 @@ php ./artisan vendor:publish --tag=platoon-script
 
 This will place an `Envoy.blade.php` file in your project folder. You can still use the `platoon:deploy` command and it will simply use your `Envoy.blade.php` file instead of it's own one.
 
-The Envoy script has **10** tasks that it runs through:
+Platoon includes some handy tools that can be used inside your own Envoy scripts. These tools provide easy access to directory names, php executable and composer paths. A more complete documentation site is being put together to detail these tools. For now, please refer to the included Envoy script which should give a good idea of how these tools can be used.
+
+The included default Platoon Envoy script has **10** tasks that it runs through:
 
 1. **Build**: The build task is used to bundle JavaScript, or any other build steps you need to take. Platoon does not include any build steps by default, and you might want to run your build steps through your CI directly. If you do need to use this task, then you'll need to publish the Envoy script and edit the `build` task (hint: it's the first task in the file).
 2. **Install**: Clones the repository into a new release directory. It will also check if there is a `release` directory in the first place and create it if needed.
@@ -154,7 +155,7 @@ The Envoy script has **10** tasks that it runs through:
 7. **database**: Migrates database changes, but only if you have set `migrate` to `true` in your config file. This can be a destructive task if you're not careful, so it might be better to run your migrations manually so you can check them first. If you're confident, then set it to `true` and the `migrate` command will be run with the `--force` flag.
 8. **live**: This is the last task to take the new release live. This step simply creates the `live` symbolic link to the new release. It will also run `artisan storage:link` to create a new link to the `storage/app/public` in the `public` directory.
 9. **cleanup**: Runs the `platoon:cleanup` command on the server. This will remove any old releases that may still be hanging around. By default the command will ensure at least 2 releases are available, but you can change this by passing a number to the `--keep` flag.
-10. **finish**: The last task will simply output the name of the release that is now live.
+10. **finish**: The last task will simply output the name of the release that is now live. There is also a `platoon:finish` command which currently only resets opcache if needed.
 
 ## Credits
 - [Warrick Bayman](https://github.com/warrickbayman)

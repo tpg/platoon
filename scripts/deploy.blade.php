@@ -181,11 +181,18 @@ cd {{ $target->paths('serve') }}
 
 @endtask
 
+{{-- Finish up
+-------------------------------------------------------------------
+Run the platoon:finish command and echo the new release name.
+-------------------------------------------------------------------}}
 @task('finish', ['on' => 'local'])
 
+cd {{ $target->paths('serve') }}
+{{ $target->artisan() }} platoon:finish
 echo "Release {{ $release }} is now live."
 
 @endtask
+
 
 {{-- The "Deploy" story
 -------------------------------------------------------------------
