@@ -15,11 +15,6 @@ class FinishCommand extends Command
 
     public function handle(): int
     {
-        if (app()->environment('local')) {
-            $this->error('This command is only meant for production.');
-            return self::FAILURE;
-        }
-
         $this->resetOpcache();
 
         return self::SUCCESS;

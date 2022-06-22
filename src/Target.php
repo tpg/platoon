@@ -13,8 +13,8 @@ class Target extends Data
 
     public readonly string $name;
     public readonly string $host;
-    public readonly int $port;
-    public readonly string $username;
+    public readonly ?int $port;
+    public readonly ?string $username;
     public readonly string $path;
     public readonly string $php;
     public readonly string $composer;
@@ -36,7 +36,7 @@ class Target extends Data
 
         $this->name = $name;
         $this->host = Arr::get($config, 'host');
-        $this->port = Arr::get($config, 'port', 22);
+        $this->port = Arr::get($config, 'port');
         $this->username = Arr::get($config, 'username');
         $this->path = Arr::get($config, 'path');
         $this->php = Arr::get($config, 'php', 'php');
@@ -50,7 +50,13 @@ class Target extends Data
 
     protected function getHostString(): string
     {
-        return $this->username.'@'.$this->host.' -p'.$this->port;
+        $parts = [
+            $this->username ? $this->username.'@' : null,
+            $this->host,
+            $this->port ? ' -p'.$this->port : '',
+        ];
+
+        return implode('', $parts);
     }
 
     public function paths(string $pathName, string $suffix = null): string

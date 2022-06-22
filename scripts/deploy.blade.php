@@ -185,7 +185,7 @@ cd {{ $target->paths('serve') }}
 -------------------------------------------------------------------
 Run the platoon:finish command and echo the new release name.
 -------------------------------------------------------------------}}
-@task('finish', ['on' => 'local'])
+@task('finish', ['on' => 'live'])
 
 cd {{ $target->paths('serve') }}
 {{ $target->artisan() }} platoon:finish

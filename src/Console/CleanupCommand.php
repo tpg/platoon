@@ -29,7 +29,7 @@ class CleanupCommand extends Command
         foreach (array_slice($releases, 0, count($releases) - $this->option('keep')) as $release) {
 
             $base = basename($release);
-            $this->output->write('Removing release '.$base.'... ');
+            $this->output->writeln('Removing release '.$base.'... ');
             $process = Process::fromShellCommandline('rm -rf '.$release);
             $process->mustRun(function ($type, $output) {
                 if ($type === Process::ERR) {
@@ -39,7 +39,6 @@ class CleanupCommand extends Command
                     throw new \RuntimeException('Failed to complete cleanup');
                 }
 
-                $this->output->writeln('OK');
             });
 
         }
@@ -49,6 +48,6 @@ class CleanupCommand extends Command
 
     protected function getPath(): string
     {
-        return Str::before(realpath(__DIR__), 'releases').'releases';
+        return Str::before(realpath(base_path()), 'releases').'releases';
     }
 }

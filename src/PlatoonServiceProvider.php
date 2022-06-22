@@ -31,15 +31,9 @@ class PlatoonServiceProvider extends ServiceProvider
         $commands = [
             DeployCommand::class,
             PublishCommand::class,
+            CleanupCommand::class,
+            FinishCommand::class,
         ];
-
-        if (! $this->app->environment('local')) {
-            $commands = [
-                ...$commands,
-                CleanupCommand::class,
-                FinishCommand::class,
-            ];
-        }
 
         if ($this->app->runningInConsole()) {
 
