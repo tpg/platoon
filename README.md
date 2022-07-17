@@ -1,7 +1,6 @@
 [![Tests](https://github.com/tpg/platoon/actions/workflows/tests.yml/badge.svg)](https://github.com/tpg/platoon/actions/workflows/tests.yml)
 
 # Simplified Laravel Envoy deployments
-
 Platoon is a simple Laravel package designed to make deployments dead simple. Platoon is really just a wrapper around Laravel Envoy and provides its own customised Envoy script.
 
 ## Status
@@ -14,21 +13,21 @@ Attache also had some seriously complex parts that I just didn't have the time t
 
 ## What about tests?
 Yeah, there's no tests here yet. Which is why it's also not version 1 yet. I wrote this as a quick, personal thing so I never actually wrote any tests. But I'll get to it eventually.
-  
----  
+
+---
 
 ## Installation
 Add the package to your Laravel app:
 
 ```shell  
 composer require thepublicgood/platoon  
-```  
+```
 
 Once the package is installed, publish the config file:
 
 ```shell  
 php ./artisan platoon:publish  
-```  
+```
 
 ## Getting Started
 This will add a `platoon.php` file to the `config` directory. In the config file, specify your deployment targets. You need to have at least one target defined:
@@ -51,7 +50,7 @@ return [
         ]  
     ],  
 ]  
-```  
+```
 
 You can configure as many targets as you need. If you deploy to one specific target more often than others, you can set the `default` option to the name of that target:
 
@@ -59,23 +58,23 @@ You can configure as many targets as you need. If you deploy to one specific tar
 return [  
     'default' => 'staging',  
 ]  
-```  
+```
 
 To deploy to a target, use the `platoon:deploy` Artisan command:
 
 ```shell  
 php ./artisan platoon:deploy production  
-```  
+```
 
 If you don't specify a server, or there is no default set in your config file, Platoon will deploy to the first server in your targets array.
 
-## Some manual tasks
-Platoon can't do everything, I'm afraid. You'll need to set up your database yourself and any other
+> **Some manual tasks**
+> Platoon can't do everything, I'm afraid. You'll need to set up your database yourself and any other config you need to do on your server.
 
 ## Structure
 Platoon will create the following directory structure in the target directory path:
 
-```  
+```
 /path/to/project/  
     |  
     +- .env  
@@ -91,7 +90,7 @@ Platoon will create the following directory structure in the target directory pa
     |       +- storate/  --> /path/to/project/storage/  
     |  
     +- storage/  
-```  
+```
 
 When you first deploy using Platoon, the `storage` directory will be moved to the project root and the current `.env.example` file will be placed in the project root directory as `.env`. The repository will be cloned into a new directory inside the `releases` directory and named with the current date and time. The `storage` directory and `.env` file are then symlinked into the new "release".
 
@@ -100,18 +99,18 @@ Lastly, the new release is then symlinked as `live` in the project root director
 ## Composer
 If you already have composer installed somewhere on the target server, you can specify its location in the config file. However, if not, Platoon will install it for you at the location you specify. Composer will also always be run using the PHP binary you specify in the config file. For example, if you config file looks like this:
 
-```php  
+```php
 "staging" => [  
     "php" => '/usr/local/bin/php8.1',  
     "composer" => '/usr/local/bin/composer',  
 ]  
-```  
+```
 
 Whenever Platoon needs to run composer, it will construct the command like this:
 
 ```shell  
 /usr/local/bin/php8.1 /user/local/bin/composer ...  
-```  
+```
 
 ## Cleaning up
 Platoon includes a `platoon:cleanup` command. You should never need to run this command and in-fact, is hidden when your applications environment is set to `local`. Once a deployment is completed, the `platoon:cleanup` command will remove any old releases on the server automatically. The current release and the previous release are left intact, so if you ever need to rollback, doing so would require linking the previous release as the `live` symbolic link.
@@ -131,7 +130,7 @@ return [
         ]  
     ]  
 ]  
-```  
+```
 
 However, be warned, if you are copying entire directories, make sure the target directory doesn't already exist. In the example above, if the target `public/build` directory already exists, you'll end up with: `public/build/build` which is probably not what you want.
 
@@ -140,7 +139,7 @@ Platoon comes with its own Envoy script. In most cases, you shouldn't need to al
 
 ```shell  
 php ./artisan vendor:publish --tag=platoon-script  
-```  
+```
 
 This will place an `Envoy.blade.php` file in your project folder. You can still use the `platoon:deploy` command and it will simply use your `Envoy.blade.php` file instead of it's own one.
 
