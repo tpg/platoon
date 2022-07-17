@@ -16,7 +16,6 @@ class PublishCommand extends Command
 
     public function handle(): int
     {
-
         $this->call(VendorPublishCommand::class, [
             '--provider' => PlatoonServiceProvider::class,
             '--tag' => 'platoon-config',

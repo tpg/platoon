@@ -25,7 +25,10 @@ production) then this is the place to do it.
 -------------------------------------------------------------------}}
 @task('build', ['on' => 'local'])
 
-# place your build tasks here
+# Build tasks from target config...
+@foreach ($target->hooks('build') as $step)
+    {{ $step }}
+@endforeach
 
 @endtask
 
@@ -41,6 +44,10 @@ echo "Installing."
 
 cd {{ $target->paths('releases') }}
 git clone --depth 50 -b {{ $target->branch }} "{{ $helper->repo() }}" {{ $release }}
+
+@foreach ($target->hooks('install')->install as $step)
+    {{ $step }}
+@endforeach
 
 @endtask
 
@@ -65,6 +72,10 @@ rm -f {{ $target->paths('releases', $release) }}/.env
 
 ln -nfs {{ $target->path }}/.env {{ $target->paths('releases', $release) }}/.env
 ln -nfs {{ $target->path }}/storage {{ $target->paths('releases', $release) }}/storage
+
+@foreach ($target->hooks('prep') as $step)
+    {{ $step }}
+@endforeach
 
 @endtask
 
@@ -101,6 +112,10 @@ then
     rm composer-setup.php
 fi
 
+@foreach ($target->hooks('composer') as $step)
+    {{ $step }}
+@endforeach
+
 @endtask
 
 {{-- Composer dependencies task
@@ -115,6 +130,10 @@ echo "Installing composer dependencies."
 cd {{ $target->paths('releases', $release) }}
 {{ $target->composer() }} self-update
 {{ $target->composer() }} install --prefer-dist --no-dev --no-progress --optimize-autoloader
+
+@foreach ($target->hooks('dependencies') as $step)
+    {{ $step }}
+@endforeach
 
 @endtask
 
@@ -131,6 +150,10 @@ echo "Installing assets."
 @foreach ($target->assets($release) as $sourcePath => $targetPath)
     echo "Copying {{ $sourcePath }}."
     scp -P{{ $target->port }} -rq "{{ $sourcePath }}" "{{ $targetPath }}"
+@endforeach
+
+@foreach ($target->hooks('assets') as $step)
+    {{ $step }}
 @endforeach
 
 @endtask
@@ -150,6 +173,11 @@ can turn it on in the config.
     cd {{ $target->paths('releases', $release) }}
     {{ $target->artisan() }} migrate --force
 @endif
+
+@foreach ($target->hooks('migrate') as $step)
+    {{ $step }}
+@endforeach
+
 @endtask
 
 
@@ -165,6 +193,10 @@ ln -nfs {{ $target->paths('releases', $release) }} {{ $target->paths('serve') }}
 cd {{ $target->paths('serve') }}
 {{ $target->artisan() }} storage:link
 
+@foreach ($target->hooks('live') as $step)
+    {{ $step }}
+@endforeach
+
 @endtask
 
 
@@ -179,17 +211,26 @@ echo "Cleaning up."
 cd {{ $target->paths('serve') }}
 {{ $target->artisan() }} platoon:cleanup --keep=2
 
+@foreach ($target->hooks('cleanup') as $step)
+    {{ $step }}
+@endforeach
+
 @endtask
 
 {{-- Finish up
 -------------------------------------------------------------------
-Run the platoon:finish command and echo the new release name.
+Finish the deployment. This task is run after cleanup and is
+used to complete any tasks needed to finish up the deployment.
+This is a good place to restart or reload any required services.
 -------------------------------------------------------------------}}
 @task('finish', ['on' => 'live'])
 
-cd {{ $target->paths('serve') }}
-{{ $target->artisan() }} platoon:finish
+php -r "function_exists('opcache_reset') ? opcache_reset() : null;"
 echo "Release {{ $release }} is now live."
+
+@foreach ($target->hooks('finish') as $step)
+    {{ $step }}
+@endforeach
 
 @endtask
 

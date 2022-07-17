@@ -7,8 +7,8 @@ namespace TPG\Platoon;
 use Illuminate\Support\ServiceProvider;
 use TPG\Platoon\Console\CleanupCommand;
 use TPG\Platoon\Console\DeployCommand;
-use TPG\Platoon\Console\FinishCommand;
 use TPG\Platoon\Console\PublishCommand;
+use TPG\Platoon\Console\TargetsCommand;
 use TPG\Platoon\Contracts\PlatoonContract;
 
 class PlatoonServiceProvider extends ServiceProvider
@@ -29,10 +29,10 @@ class PlatoonServiceProvider extends ServiceProvider
     protected function bootCommands(): void
     {
         $commands = [
+            CleanupCommand::class,
             DeployCommand::class,
             PublishCommand::class,
-            CleanupCommand::class,
-            FinishCommand::class,
+            TargetsCommand::class,
         ];
 
         if ($this->app->runningInConsole()) {

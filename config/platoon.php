@@ -34,20 +34,36 @@ return [
     | This is the list of deployment targets. You can specify the target
     | you want to deploy to when using the "platoon:deploy" artisan command.
     |
+    | If you have targets that share common settings, you can set a "common"
+    | target and override the common settings per target.
+    |
+    | Use the "build" array to specify any local build tasks you need to run
+    | before deployment.
+    |
     */
     'targets' => [
 
+        'common' => [
+            'host' => 'common.test',
+            'port' => 22,
+        ],
+
         'staging' => [
-            'host' => 'inferno.thepublicgood.dev',
-            'port' => 5252,
-            'username' => 'ubuntu',
-            'path' => '/opt/platoon',
+            'host' => 'staging.test',
+            'port' => 22,
+            'username' => 'ssh-username',
+            'path' => '/path/to/application/root',
             'php' => '/usr/bin/php',
-            'composer' => '/opt/platoon/composer.phar',
+            'composer' => '/path/to/composer.phar',
             'branch' => 'master',
             'migrate' => false,
             'assets' => [
                 // 'local' => 'remote',
+            ],
+            'hooks' => [
+                'build' => [
+                    // place your build tasks here.
+                ]
             ],
         ],
     ],

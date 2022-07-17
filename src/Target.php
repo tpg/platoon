@@ -29,6 +29,9 @@ class Target extends Data
     ];
 
     public readonly string $hostString;
+    /**
+     * @var array|\ArrayAccess|mixed
+     */
 
     public function __construct(string $name, array $config)
     {
@@ -97,5 +100,10 @@ class Target extends Data
         return collect($this->assets)->mapWithKeys(
             fn($dest, $source) => [$source => $this->username.'@'.$this->host.':'.$this->paths('releases', $release).'/'.$dest]
         )->toArray();
+    }
+
+    public function hooks(string $step): array
+    {
+        return Arr::get($this->config, 'hooks.'.$step, []) ?? [];
     }
 }

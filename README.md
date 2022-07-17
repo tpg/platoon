@@ -5,8 +5,8 @@ Platoon is a simple Laravel package designed to make deployments dead simple. Pl
 ## Status
 Platoon is still fairly new and you shouldn't use this with mission critical stuff unless you're super happy with taking a bit of risk. However, with that said, I use this script all the time and its based on a process I've been using for years. It was the heart of the Attache package I wrote some years back, and I now use Platoon in my own CI/CD pipeline.
 
-## What about Attache?
-So Attache was great. I used it a lot for a while and it still gets used a bunch on some older projects, but it's been neglected as I don't use it myself much anymore. Mainly because it doesn't fit all that well into my CI/CD pipeline. I've been slowly migrating back to Envoy, but I missed some of the simplicity of Attache, so this is my attempt to make my daily use of Envoy just a little more delightful.
+## What about Attaché?
+So Attaché was great. I used it a lot for a while and it still gets used a bunch on some older projects, but it's been neglected as I don't use it myself much anymore. Mainly because it doesn't fit all that well into my CI/CD pipeline. I've been slowly migrating back to Envoy, but I missed some of the simplicity of Attache, so this is my attempt to make my daily use of Envoy just a little more delightful.
 
 Attache also had some seriously complex parts that I just didn't have the time to maintain anymore.
 

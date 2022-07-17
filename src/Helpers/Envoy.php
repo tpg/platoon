@@ -6,6 +6,7 @@ namespace TPG\Platoon\Helpers;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use TPG\Platoon\Platoon;
 use TPG\Platoon\Target;
 
 class Envoy
@@ -13,6 +14,7 @@ class Envoy
     public readonly string $localhost;
     protected readonly array $config;
     protected readonly Collection $targets;
+    protected readonly Platoon $platoon;
 
     public function __construct()
     {
@@ -20,47 +22,24 @@ class Envoy
 
         $this->config = include(getcwd().'/config/platoon.php');
 
+        $this->platoon = new Platoon($this->config);
 
-        $this->loadTargets();
-    }
-
-    protected function loadTargets(): void
-    {
-        $this->targets = collect(Arr::get($this->config, 'targets'))->map(fn ($config, $key) => new Target($key, $config));
-
-        if ($this->targets->count() === 0) {
+        if ($this->platoon->targets()->count() === 0) {
             throw new \RuntimeException('No targets specified');
         }
-
-        $this->targets->keyBy(fn (Target $target) => $target->name);
     }
 
     public function target(?string $name = null): Target
     {
         if (! $name) {
-            return $this->getDefaultTarget();
+            return $this->platoon->defaultTarget();
         }
 
-        if (! $this->targets->has($name)) {
+        if (! $this->platoon->targets()->has($name)) {
             throw new \RuntimeException('No target with name "'.$name.'"');
         }
 
-        return $this->targets->get($name);
-    }
-
-    protected function getDefaultTarget(): Target
-    {
-        $defaultName = Arr::get($this->config, 'default');
-
-        if ($defaultName && ! $this->targets->has($defaultName)) {
-            throw new \RuntimeException('No target with name "'.$defaultName.'"');
-        }
-
-        if (! $defaultName) {
-            return $this->targets->first();
-        }
-
-        return $this->targets->get($defaultName);
+        return $this->platoon->target($name);
     }
 
     public function repo(): string
@@ -70,7 +49,7 @@ class Envoy
 
     public function newRelease(string $prefix = null, string $suffix = null): string
     {
-        date_default_timezone_set('Africa/Johannesburg');
+        date_default_timezone_set('UTC');
         return $prefix.date('YmdHis').$suffix;
     }
 
