@@ -1,3 +1,5 @@
+[![Tests](https://github.com/tpg/platoon/actions/workflows/tests.yml/badge.svg)](https://github.com/tpg/platoon/actions/workflows/tests.yml)
+
 # Simplified Laravel Envoy deployments
 
 Platoon is a simple Laravel package designed to make deployments dead simple. Platoon is really just a wrapper around Laravel Envoy and provides its own customised Envoy script.
@@ -12,58 +14,58 @@ Attache also had some seriously complex parts that I just didn't have the time t
 
 ## What about tests?
 Yeah, there's no tests here yet. Which is why it's also not version 1 yet. I wrote this as a quick, personal thing so I never actually wrote any tests. But I'll get to it eventually.
-
----
+  
+---  
 
 ## Installation
 Add the package to your Laravel app:
 
-```shell
-composer require thepublicgood/platoon
-```
+```shell  
+composer require thepublicgood/platoon  
+```  
 
 Once the package is installed, publish the config file:
 
-```shell
-php ./artisan platoon:publish
-```
+```shell  
+php ./artisan platoon:publish  
+```  
 
 ## Getting Started
 This will add a `platoon.php` file to the `config` directory. In the config file, specify your deployment targets. You need to have at least one target defined:
 
-```php
-return [
-    'targets' => [
-        'staging' => [
-            'host' => 'target.host',  
-            'port' => 22,  
-            'username' => 'username',  
-            'path' => '/path/to/project',  
-            'php' => '/usr/bin/php',  
-            'composer' => '/path/to/composer.phar',  
-            'branch' => 'master',  
-            'migrate' => false,  
-        ],
-        'production' => [
-            //...
-        ]
-    ],
-]
-```
+```php  
+return [  
+    'targets' => [  
+        'staging' => [  
+            'host' => 'target.host',    
+            'port' => 22,    
+            'username' => 'username',    
+            'path' => '/path/to/project',    
+            'php' => '/usr/bin/php',    
+            'composer' => '/path/to/composer.phar',    
+            'branch' => 'master',    
+            'migrate' => false,    
+        ],  
+        'production' => [  
+            //...  
+        ]  
+    ],  
+]  
+```  
 
 You can configure as many targets as you need. If you deploy to one specific target more often than others, you can set the `default` option to the name of that target:
 
-```php
-return [
-    'default' => 'staging',
-]
-```
+```php  
+return [  
+    'default' => 'staging',  
+]  
+```  
 
 To deploy to a target, use the `platoon:deploy` Artisan command:
 
-```shell
-php ./artisan platoon:deploy production
-```
+```shell  
+php ./artisan platoon:deploy production  
+```  
 
 If you don't specify a server, or there is no default set in your config file, Platoon will deploy to the first server in your targets array.
 
@@ -73,23 +75,23 @@ Platoon can't do everything, I'm afraid. You'll need to set up your database you
 ## Structure
 Platoon will create the following directory structure in the target directory path:
 
-```
-/path/to/project/
-    |
-    +- .env
-    |
-    +- live/  --> /path/to/project/releases/202201010000
-    |
-    +- releases/
-    |   |
-    |   +- 202201010000/
-    |       |
-    |       +- .env  --> /path/to/project/.env
-    |       |
-    |       +- storate/  --> /path/to/project/storage/
-    |
-    +- storage/
-```
+```  
+/path/to/project/  
+    |  
+    +- .env  
+    |  
+    +- live/  --> /path/to/project/releases/202201010000  
+    |  
+    +- releases/  
+    |   |  
+    |   +- 202201010000/  
+    |       |  
+    |       +- .env  --> /path/to/project/.env  
+    |       |  
+    |       +- storate/  --> /path/to/project/storage/  
+    |  
+    +- storage/  
+```  
 
 When you first deploy using Platoon, the `storage` directory will be moved to the project root and the current `.env.example` file will be placed in the project root directory as `.env`. The repository will be cloned into a new directory inside the `releases` directory and named with the current date and time. The `storage` directory and `.env` file are then symlinked into the new "release".
 
@@ -98,18 +100,18 @@ Lastly, the new release is then symlinked as `live` in the project root director
 ## Composer
 If you already have composer installed somewhere on the target server, you can specify its location in the config file. However, if not, Platoon will install it for you at the location you specify. Composer will also always be run using the PHP binary you specify in the config file. For example, if you config file looks like this:
 
-```php
-"staging" => [
-    "php" => '/usr/local/bin/php8.1',
-    "composer" => '/usr/local/bin/composer',
-]
-```
+```php  
+"staging" => [  
+    "php" => '/usr/local/bin/php8.1',  
+    "composer" => '/usr/local/bin/composer',  
+]  
+```  
 
 Whenever Platoon needs to run composer, it will construct the command like this:
 
-```shell
-/usr/local/bin/php8.1 /user/local/bin/composer ...
-```
+```shell  
+/usr/local/bin/php8.1 /user/local/bin/composer ...  
+```  
 
 ## Cleaning up
 Platoon includes a `platoon:cleanup` command. You should never need to run this command and in-fact, is hidden when your applications environment is set to `local`. Once a deployment is completed, the `platoon:cleanup` command will remove any old releases on the server automatically. The current release and the previous release are left intact, so if you ever need to rollback, doing so would require linking the previous release as the `live` symbolic link.
@@ -119,26 +121,26 @@ Platoon provides a simple solution for getting compiled assets onto the server w
 
 For example, if you have a `build` directory in `public` that needs to be copied, you can set this up as:
 
-```php
-return [
-    "targets" => [
-        "staging" => [
-            "assets" => [
-                "public/build" => "public/build",
-            ]
-        ]
-    ]
-]
-```
+```php  
+return [  
+    "targets" => [  
+        "staging" => [  
+            "assets" => [  
+                "public/build" => "public/build",  
+            ]  
+        ]  
+    ]  
+]  
+```  
 
 However, be warned, if you are copying entire directories, make sure the target directory doesn't already exist. In the example above, if the target `public/build` directory already exists, you'll end up with: `public/build/build` which is probably not what you want.
 
 ## The Envoy script
 Platoon comes with its own Envoy script. In most cases, you shouldn't need to alter the script, but if you feel like you need to, you can publish it to your project with:
 
-```shell
-php ./artisan vendor:publish --tag=platoon-script
-```
+```shell  
+php ./artisan vendor:publish --tag=platoon-script  
+```  
 
 This will place an `Envoy.blade.php` file in your project folder. You can still use the `platoon:deploy` command and it will simply use your `Envoy.blade.php` file instead of it's own one.
 
@@ -156,6 +158,54 @@ The included default Platoon Envoy script has **10** tasks that it runs through:
 8. **live**: This is the last task to take the new release live. This step simply creates the `live` symbolic link to the new release. It will also run `artisan storage:link` to create a new link to the `storage/app/public` in the `public` directory.
 9. **cleanup**: Runs the `platoon:cleanup` command on the server. This will remove any old releases that may still be hanging around. By default the command will ensure at least 2 releases are available, but you can change this by passing a number to the `--keep` flag.
 10. **finish**: The last task will simply output the name of the release that is now live. There is also a `platoon:finish` command which currently only resets opcache if needed.
+
+## Hooks
+If you don't want to alter the Envoy script, Platoon provides a simple solution to providing your own commands that need to run at each step. In the `platoon` config file you can add hooks for each step to the `hooks` associated array per target:
+
+```php
+return [
+    'targets' => [
+        'production' => [
+            //...
+            'hooks' => [
+                'build' => [
+                    // Build steps
+                ],
+                'install' => [
+                    // Additional install steps
+                ],
+                'prep' => [
+                    // Additional preparation steps
+                ],
+                'composer' => [
+                    // Additioanl steps to run after composer is installed
+                ],
+                'dependencies' => [
+                    // Additional steps after dependencies have been installed
+                ],
+                'assets' => [
+                    // Additional asset steps
+                ],
+                'database' => [
+                    // Additional migration steps
+                ],
+                'live' => [
+                    // Additional steps after making the deployment live
+                ],
+                'cleanup' => [
+                    // Additional cleanup steps
+                ],
+                'finish' => [
+                    // Final steps to take
+                ]
+            ]
+        ]
+    ]
+
+];
+```
+
+All hooks are run AFTER the steps taken by the Envoy script that comes with Envoy. If you need anything more complex than this, then the best way to do so is to publish the Envoy script and modify it directly.
 
 ## Credits
 - [Warrick Bayman](https://github.com/warrickbayman)
