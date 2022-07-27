@@ -1,0 +1,16 @@
+{
+  "name": "platoon",
+  "version": "1.0.0",
+  "description": "Platoon Documentation",
+  "main": "index.js",
+  "repository": "git@github.com:tpg/platoon.git",
+  "author": "THEPUBLICGOOD <makers@thepublicgood.dev>",
+  "license": "MIT",
+  "devDependencies": {
+    "vuepress": "^2.0.0-beta.49"
+  },
+  "scripts": {
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs"
+  }
+}

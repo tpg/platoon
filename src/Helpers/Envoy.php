@@ -29,6 +29,11 @@ class Envoy
         }
     }
 
+    public function config(string $key): mixed
+    {
+        return Arr::get($this->config, $key);
+    }
+
     public function target(?string $name = null): Target
     {
         if (! $name) {
