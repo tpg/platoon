@@ -45,7 +45,7 @@ echo "Installing."
 cd {{ $target->paths('releases') }}
 git clone --depth 50 -b {{ $target->branch }} "{{ $helper->repo() }}" {{ $release }}
 
-@foreach ($target->hooks('install')->install as $step)
+@foreach ($target->hooks('install') as $step)
     {{ $step }}
 @endforeach
 
