@@ -104,6 +104,7 @@ class Target extends Data
 
     public function hooks(string $step): array
     {
-        return Arr::get($this->config, 'hooks.'.$step, []) ?? [];
+        $expander = new TagExpander($this);
+        return array_map(fn (array $commands) => $expander->expand($commands), Arr::get($this->config, 'hooks.'.$step, []) ?? []);
     }
 }
