@@ -15,7 +15,7 @@ class DeployCommand extends Command
 
     public function handle(): int
     {
-        $process = Process::fromShellCommandline($this->getCommand(), base_path());
+        $process = Process::fromShellCommandline($this->getCommand(), base_path(), timeout: 0);
 
         $process->setTty(Process::isTtySupported());
 

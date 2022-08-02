@@ -30,7 +30,7 @@ class CleanupCommand extends Command
 
             $base = basename($release);
             $this->output->writeln('Removing release '.$base.'... ');
-            $process = Process::fromShellCommandline('rm -rf '.$release);
+            $process = Process::fromShellCommandline('rm -rf '.$release, timeout: 0);
             $process->mustRun(function ($type, $output) {
                 if ($type === Process::ERR) {
                     $this->output->writeln('ERROR!');
