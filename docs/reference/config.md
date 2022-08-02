@@ -134,7 +134,7 @@ Hooks are a simple way to add functionality to each task without needing to modi
 ]
 ```
 
-The the exception of `build` and `assets`, all tasks are run on the remote server. The following hooks are available:
+With the exception of `build` and `assets`, all tasks are run on the remote server. The following hooks are available:
 
 | Hook | Where | Description |
 |------|-------|-------------|
@@ -148,3 +148,30 @@ The the exception of `build` and `assets`, all tasks are run on the remote serve
 | `live` | remote | Create the `live` symbolic link effective making the project live. |
 | `cleanup` | remote | Remove any old releases |
 | `finish` | remote | Run any final deployment tasks |
+
+Platoon hooks also include a set of expansion tags that can make writing hooks a while lot easier. For example, you can reference the configured PHP executable by using the `@php` tag. This means, you could write the previous `finish` hook like this:
+
+```php
+'finish' => [
+    '@php ./artisan horizon:terminate'
+],
+```
+
+However, there is also a `@artisan` tag which will basically do that same thing inside the release directory:
+
+```php
+'finish' => [
+    '@artisan horizon:terminate'
+],
+```
+
+This way you never have to worry about having the correct paths.
+
+The following tags are provided and how they are expanded:
+
+| Tag | Expansion |
+|-----|-----------|
+| `@php` | The full path to the configured PHP binary |
+| `@artisan` | The full path to the artisan script prefixed with the configured PHP binary.
+| `@release` | The release number |
+| `@base` | The project base directory |

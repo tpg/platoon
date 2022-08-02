@@ -45,6 +45,7 @@ echo "Installing."
 cd {{ $target->paths('releases') }}
 git clone --depth 50 -b {{ $target->branch }} "{{ $helper->repo() }}" {{ $release }}
 
+cd {{ $target->path }}
 @foreach ($target->hooks('install') as $step)
     {{ $step }}
 @endforeach
@@ -73,6 +74,7 @@ rm -f {{ $target->paths('releases', $release) }}/.env
 ln -nfs {{ $target->path }}/.env {{ $target->paths('releases', $release) }}/.env
 ln -nfs {{ $target->path }}/storage {{ $target->paths('releases', $release) }}/storage
 
+cd {{ $target->path }}
 @foreach ($target->hooks('prep') as $step)
     {{ $step }}
 @endforeach
@@ -112,6 +114,7 @@ then
     rm composer-setup.php
 fi
 
+cd {{ $target->path }}
 @foreach ($target->hooks('composer') as $step)
     {{ $step }}
 @endforeach
@@ -131,6 +134,7 @@ cd {{ $target->paths('releases', $release) }}
 {{ $target->composer() }} self-update
 {{ $target->composer() }} install --prefer-dist --no-dev --no-progress --optimize-autoloader
 
+cd {{ $target->path }}
 @foreach ($target->hooks('dependencies') as $step)
     {{ $step }}
 @endforeach
@@ -174,6 +178,7 @@ can turn it on in the config.
     {{ $target->artisan() }} migrate --force
 @endif
 
+cd {{ $target->path }}
 @foreach ($target->hooks('migrate') as $step)
     {{ $step }}
 @endforeach
@@ -193,6 +198,7 @@ ln -nfs {{ $target->paths('releases', $release) }} {{ $target->paths('serve') }}
 cd {{ $target->paths('serve') }}
 {{ $target->artisan() }} storage:link
 
+cd {{ $target->path }}
 @foreach ($target->hooks('live') as $step)
     {{ $step }}
 @endforeach
@@ -211,6 +217,7 @@ echo "Cleaning up."
 cd {{ $target->paths('serve') }}
 {{ $target->artisan() }} platoon:cleanup --keep=2
 
+cd {{ $target->path }}
 @foreach ($target->hooks('cleanup') as $step)
     {{ $step }}
 @endforeach
@@ -228,6 +235,7 @@ This is a good place to restart or reload any required services.
 php -r "function_exists('opcache_reset') ? opcache_reset() : null;"
 echo "Release {{ $release }} is now live."
 
+cd {{ $target->path }}
 @foreach ($target->hooks('finish') as $step)
     {{ $step }}
 @endforeach
