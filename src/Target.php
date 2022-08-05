@@ -26,6 +26,7 @@ class Target extends Data
         'releases' => 'releases',
         'serve' => 'live',
         'storage' => 'storage',
+        '.env' => '.env',
     ];
 
     public readonly string $hostString;
@@ -39,14 +40,18 @@ class Target extends Data
 
         $this->name = $name;
         $this->host = Arr::get($config, 'host');
-        $this->port = Arr::get($config, 'port');
+        $this->port = Arr::get($config, 'port', 22);
         $this->username = Arr::get($config, 'username');
         $this->path = Arr::get($config, 'path');
-        $this->php = Arr::get($config, 'php', 'php');
-        $this->composer = Arr::get($config, 'composer', 'composer');
+        $this->php = Arr::get($config, 'php', '/usr/bin/php');
+        $this->composer = Arr::get($config, 'composer', $this->path.'/composer.phar');
         $this->branch = Arr::get($config, 'branch', 'main');
         $this->migrate = Arr::get($config, 'migrate', false);
         $this->assets = Arr::get($config, 'assets', []) ?? [];
+        $this->paths = [
+            ...$this->paths,
+            ...Arr::get($config, 'paths', []),
+        ];
 
         $this->hostString = $this->getHostString();
     }

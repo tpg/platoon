@@ -4,10 +4,10 @@ title: Envoy Reference
 description: The Platoon Envoy script
 ---
 
-Platoon is really just a wrapper around Envoy. You could do everything that Platoon does using Envoy alone. However, Platoon is designed to make your life just a little bit easier. Envoy is fantastic and is really not all that complicated. However, getting zero-downtime deployments right can be a little tricky. This is where Platoon can help.
+Platoon is really just a wrapper around Envoy. You could do everything that Platoon does using Envoy alone. However, Platoon is designed to make your life just a little bit easier. Envoy is fantastic and is really not all that complicated. Getting zero-downtime deployments right can be a little tricky as there's a bunch of steps to get through, so this is where Platoon is really useful.
 
 ## The script
-Since Platoon just wraps Laravel Envoy, there is a default Envoy script at it's heart. Once you have Platoon installed, you can publish the Envoy script with:
+Since Platoon just wraps Laravel Envoy, there is a default Envoy script at it's heart. If you feel the need to modify the script, you can publish the Envoy script with:
 
 ```shell
 php ./artisan vendor:publish --tag=platoon-envoy
@@ -15,7 +15,7 @@ php ./artisan vendor:publish --tag=platoon-envoy
 
 This will place an `Envoy.blade.php` file at the root of app. If you're interested in learning more about Envoy (and we strongly encourage you to do so), take a look through the [documentation](https://laravel.com/docs/envoy).
 
-Note that you don't actually need to publish the Envoy script. However, there are cases where you may need to alter the script. If you're simply trying to add commands to each task, take a look at the [Hooks section](/reference/config.html#hooks) of the config reference.
+You shouldn't actually need to publish the Envoy script, and if you're simply trying to add commands to each task, take a look at [Hooks](/reference/config.html#hooks) in the config reference. You can add functionality to each step without needing the Envoy script at all.
 
 The Envoy script is broken up into the separate Platoon tasks (build, install, composer, etc...), and are run in sequence using the `deploy` story:
 
@@ -85,12 +85,11 @@ $target = $helper->target($server);
 
 To make this work, take note of how the the Composer `autoload` script is included.
 
-
 ::: tip Note
-Of obvious reasons, Envoy does not boot an entire Laravel application. You will not have access to your actual app or any configuration. To get round this, the Envoy helper imports it's own configuration only. Anything you place in the `platoon.php` config file will be accessible through the helper.
+For obvious reasons, Envoy does not boot an entire Laravel application. You will not have access to your actual app or any configuration. To get round this, the Envoy helper imports it's own configuration only. Anything you place in the `platoon.php` config file will be accessible through the helper, but that's it. You won't have access to stuff inside the `app.php` config.
 :::
 
-You can return any Platoon configuration option through the helper with the `config()` method. In most cases, you should not need to be grabbing configuration items, but the method is there if you need it:
+You can get hold of any Platoon configuration option through the helper with the `config()` method. In most cases, you should not need to be grabbing configuration items, but the method is there if you need it:
 
 ```php
 $helper->config('targets.common.host');
@@ -99,13 +98,14 @@ $helper->config('targets.common.host');
 The first task of the helper is to create a new release by calling `$helper->newRelease()`. This will return the name of the directory that will be created inside the `releases` directory. Since this name is needed a bunch, it's a good idea to keep a copy of it. Next, the helper also needs to provide the deployment target. The `target($server)` method returns an instance of `Target` which in turn provides all the details of the specified target.
 
 ### Paths
-The `paths()` method can be used to fetch a fully qualified project path. There are three defined paths: `releases`, `live` and `storage`. You can also get the project root by using the `path` property on the `Target` instance.
+The `paths()` method can be used to fetch a fully qualified project path. There are four defined paths: `releases`, `live`, `storage` and `.env`. You can also get the project root by using the `path` property on the `Target` instance.
 
 ```php
 $target->path;  // Project root: /path/to/application
 $target->paths('releases');     // /path/to/application/releases
 $target->paths('live');         // /path/to/application/live
 $target->paths('storage');      // /path/to/application/storage
+$target->paths('.env');         // /path/to/application/.env
 ```
 
 The `paths` method also accepts a second parameter as a suffix. This can be useful if you need to get to the deployed release path:
@@ -115,7 +115,7 @@ $target->paths('releases', $release);   // /path/to/application/releases/1234567
 ```
 
 ### Executables
-Platoon needs to know where the PHP, and Composer binaries are. This is done because it's common to find multiple versions of PHP on the same host. These values can be configured per target with the `php` and `composer` settings. The `Target` instance provides these values through the `php` and `composer` properties respectively:
+Platoon needs to know where the PHP, and Composer binaries are. This is done because it's not uncommon to find multiple versions of PHP on the same host. These values can be configured per target with the `php` and `composer` settings. The `Target` instance provides these values through the `php` and `composer` properties respectively:
 
 ```php
 $target->php;       // Path specified as the `php` config
@@ -133,6 +133,10 @@ Likewize, there is an `artisan()` method that does something similar:
 ```php
 $target->artisan();     // /path/to/php /path/to/application/live/artisan
 ```
+
+::: tip Note
+Note the difference between `$target->composer` and `$target->composer()`.
+:::
 
 ### Assets
 Since assets are always copied into the release directory, the `assets()` method takes the name of the release returned by the `newRelease()` method on the helper. The `assets` method will then alter the assets array to include the full target path.
@@ -162,4 +166,18 @@ The `hooks` method will always return an array of commands, so you'll need to lo
 @foreach ($target->hooks('build') as $step)
     {{ $step }}
 @endforeach
+```
+
+To add hooks to the previous `supervisor` task, the result could look as follows:
+
+```php
+@task('supervisor', ['on' => 'live'])
+
+supervisorctl reload
+
+@foreach ($target->hooks('supervisor') as $step)
+    {{ $step }}
+@endforeach
+
+@endtask
 ```

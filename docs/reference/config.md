@@ -5,9 +5,9 @@ description: Platoon configuration file reference
 ---
 
 # Configuration Reference
-The Platoon configuration is simple, but since it's a normal Laravel config file (which is really just a PHP that returns an array), and Laravel developer should feel right at home. The Platoon config is in the `platoon.php` file in your config directory. It is created automatically when requiring the Platoon package.
+The Platoon configuration is simple, and since it's a normal Laravel config file (which is really just a PHP file that returns an array), Laravel developers should feel right at home. The Platoon config is in the `platoon.php` file in your config directory. It is created automatically when requiring the Platoon package.
 
-The config file houses all deployment information for the current project.
+The config file houses all deployment information for the current project and you'll want to include this file in your repository. Platoon does not support password authentication, so you should not be including any sensitive authentication information in the config file.
 
 ## Targets
 Targets are the hosts where your project will be deployed to. You can have as many targets as you need, but you must have at least one. A typical target configuration looks something like this:
@@ -27,14 +27,26 @@ Targets are the hosts where your project will be deployed to. You can have as ma
 ]
 ```
 
-The `staging` key is the name of the target. You'll use this name to reference this target when deploying. All these settings are required, but there are a few that are optional. In particular, the `assets` and `hooks` target settings are not required. You can find out more about them under the [Assets](#assets) and [Hooks](#hooks) sections.
+The `staging` key is the name of the target. You'll use this name to reference this target when deploying. The only required options are `host`, `username` and `path`. All the others have default values. There are also `assets` and `hooks` settings that are not required. You can find out more about them under the [Assets](#assets) and [Hooks](#hooks) sections.
 
 ::: tip Note
 Platoon does not support password authentication. Your targets MUST be accessible using SSH keys. This means you'll need to generate a local key pair and copy the public key to the server.
 :::
 
+| Target setting | Default | Description |
+| `host` | - | The hostname or IP address of the remote target |
+| `port` | 22 | The SSH port number |
+| `username` | - | The SSH username |
+| `path` | - | The path to the project root |
+| `php` | `/usr/bin/php` | The full path to the PHP binary |
+| `composer` | `<project-root>/composer.phar` | The full path to where composer.phar is stored |
+| `branch` | `main` | The branch to clone |
+| `migrate` | `false` | Migrate database changes on the target |
+| `assets` | `[]` | Assets to copy during deployment. See [Assets](#assets) |
+| `hooks` | `[]` | The hooks to run. See [Hooks](#hooks) |
+| `paths` | `[]` | Any changes to directory structure. See [Directory Structure](#directory-structure) |
 ## Directory structure
-The `path` setting refers to the ROOT directory where the project is stored. In this root directory, Platoon will place all the bits needed for your project. By default there is a `releases` directory, a `storage` directory, a `.env` file and a symbolic link named `live`. During deployment, Platoon will create symbolic links for the `.env` file and `storage` directory into a new release directory created in `releases`. A typical project directory structure looks something like this:
+The `path` setting refers to the ROOT directory where the project is stored. In this root directory, Platoon will place all the bits needed for your project. By default there is a `releases` directory, a `storage` directory, a `.env` file and a symbolic link named `live`. During deployment, Platoon will create symbolic links for the `.env` file and `storage` directory into a new directory created in `releases`. A typical project directory structure looks something like this:
 
 ```
 /path/to/project/
@@ -55,6 +67,30 @@ The `path` setting refers to the ROOT directory where the project is stored. In 
 ```
 
 If you need to make changes to the `.env` file or the contents of the `storage` directory, you do so in the project root. This is the magic behind the zero-downtime deployment.
+
+You can change the names of the directories that Platoon will create. In most cases, you should leave these settings alone, but if the need arises, you can pass an array to the `paths` config in your `platoon.php` target config:
+
+```php
+'targets' => [
+    'staging' => [
+        //...
+        'paths' => [
+            'releases' => 'deployments',
+            'live' => 'serve',
+            'storage' => 'stuff',
+            '.env' => 'config',
+        ]
+    ]
+]
+```
+
+| Path Config | Default | Description |
+| `releases`  | `releases` | The directory where new releases are deployed |
+| `live` | `live` | The name of the symbolic link that the web server should serve |
+| `storage` | `storage` | The name of the Laravel storage directory |
+| `.env` | `.env` | The name of the laravel `.env` file |
+
+Note that the `.env` and `storage` paths will always be named correctly when symlinked into the release. These settings allow you to change the name of the paths that Platoon will create.
 
 ## Default target
 Since it may be common to have more than one target, it's handy to have one of them set as the default. You can do this by supplying the name of one of the targets to the `default` config setting. Platoon will then use this target without you needing to specify it when deploying. If you don't specify a default in the config, then Platoon will assume that the first target specified is the default.
@@ -84,14 +120,14 @@ return [
         'production' => [
             'path' => '/opt/app/production',
             'migrate' => false,
-            'branch' => 'master',
+            'branch' => 'main',
         ]
     ]
 ]
 ```
 
 ## Assets
-It's strongly recommended that you never place compiled assets in your projects Git repository. It just makes things messy. Instead, assets should be compiled either on the target, or compiled and copied to the target. The latter is a common approach when dealing with a CI/CD pipeline. You can specify a list of assets to copy using the `assets` array on your target. You can also specify `assets` on the common target and it will be used for all other targets automatically.
+It's strongly recommended that you never place compiled assets in your projects Git repository. It just makes things messy. Instead, assets should be compiled either on the target, or compiled and copied to the target during deployment. The latter is a common approach when dealing with a CI/CD pipeline. You can specify a list of assets to copy using the `assets` array on your target. You can also specify `assets` on the common target and it will be used for all other targets automatically.
 
 The `assets` array is a key value pair. The key being the local file, and the value being the remote file.
 
@@ -107,9 +143,9 @@ The `assets` array is a key value pair. The key being the local file, and the va
 ```
 
 ::: tip Take Note
-When specifying whole directories, take note that if you specify a directory that already exists, the assets will be copied to a new directory INSIDE the directory you specified. This is likely NOT what you want. The example above gives a solution to getting around this issue.
+When specifying whole directories, take note that if you specify a directory that already exists, the assets will be copied to a new directory INSIDE the directory you specified. This is likely NOT what you want and can be annoying to debug.
 
-Directories are always copied recursively, so you don't need to specify any children paths.
+Directories are always copied recursively, so you don't need to specify any child paths.
 :::
 
 ## Cleaning up
@@ -149,7 +185,9 @@ With the exception of `build` and `assets`, all tasks are run on the remote serv
 | `cleanup` | remote | Remove any old releases |
 | `finish` | remote | Run any final deployment tasks |
 
-Platoon hooks also include a set of expansion tags that can make writing hooks a while lot easier. For example, you can reference the configured PHP executable by using the `@php` tag. This means, you could write the previous `finish` hook like this:
+All hooks run on the remote target are executed within the project root path.
+
+Platoon hooks also include a set of expansion tags that can make writing hooks a whole lot easier. For example, you can reference the configured PHP executable by using the `@php` tag. This means, you could write the previous `finish` hook like this:
 
 ```php
 'finish' => [
@@ -167,11 +205,11 @@ However, there is also a `@artisan` tag which will basically do that same thing 
 
 This way you never have to worry about having the correct paths.
 
-The following tags are provided and how they are expanded:
+The following tags are provided:
 
 | Tag | Expansion |
 |-----|-----------|
 | `@php` | The full path to the configured PHP binary |
-| `@artisan` | The full path to the artisan script prefixed with the configured PHP binary.
-| `@release` | The release number |
+| `@artisan` | The full path to the artisan script prefixed with the configured PHP binary |
+| `@composer` | The path to the configured composer phar |
 | `@base` | The project base directory |

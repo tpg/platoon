@@ -64,15 +64,15 @@ cd {{ $target->path }}
 
 if [[ ! -d "{{ $target->paths('storage') }}" ]]
 then
-    cp -r {{ $target->paths('releases', $release) }}/storage {{ $target->path }}/storage
-    cp {{ $target->paths('releases', $release) }}/.env.example {{ $target->path }}/.env
+    cp -r {{ $target->paths('releases', $release) }}/storage {{ $target->paths('storage') }}
+    cp {{ $target->paths('releases', $release) }}/.env.example {{ $target->paths('.env') }}
 fi
 
 rm -rf {{ $target->paths('releases', $release) }}/storage
 rm -f {{ $target->paths('releases', $release) }}/.env
 
-ln -nfs {{ $target->path }}/.env {{ $target->paths('releases', $release) }}/.env
-ln -nfs {{ $target->path }}/storage {{ $target->paths('releases', $release) }}/storage
+ln -nfs {{ $target->paths('.env') }} {{ $target->paths('releases', $release) }}/.env
+ln -nfs {{ $target->paths('storage') }} {{ $target->paths('releases', $release) }}/storage
 
 cd {{ $target->path }}
 @foreach ($target->hooks('prep') as $step)

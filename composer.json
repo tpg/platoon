@@ -40,7 +40,7 @@
     },
     "scripts": {
         "post-install-cmd": [
-            "@php artisan vendor:publish --tag=platoon --ansi --force"
+            "@php artisan vendor:publish --tag=platoon-config --ansi --force"
         ]
     },
     "config": {
