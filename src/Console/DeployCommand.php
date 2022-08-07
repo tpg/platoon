@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace TPG\Platoon\Console;
 
-use Illuminate\Console\Command;
 use Symfony\Component\Process\Process;
 
-class DeployCommand extends Command
+class DeployCommand extends PlatoonCommand
 {
-    protected $signature = 'platoon:deploy {server?}';
+    protected $signature = 'platoon:deploy {target}';
 
     protected $description = 'Run the deployment script';
 
     public function handle(): int
     {
-        $process = Process::fromShellCommandline($this->getCommand(), base_path(), timeout: 0);
+        $command = $this->platoon->getEnvoyCommand($this->argument('server'), 'deploy');
+        $process = Process::fromShellCommandline($command, base_path(), timeout: 0);
 
         $process->setTty(Process::isTtySupported());
 
@@ -31,17 +31,4 @@ class DeployCommand extends Command
         });
 
         return self::SUCCESS;
-    }
-
-    protected function getCommand(): string
-    {
-        $exec = base_path('vendor/bin/envoy');
-
-        $script = 'vendor/thepublicgood/platoon/scripts/deploy.blade.php';
-        if (file_exists(base_path('Envoy.blade.php'))) {
-            $script = 'Envoy.blade.php';
-        }
-
-        return $exec.' run deploy --conf='.$script.' --server='.$this->argument('server');
-    }
-}
+    }}

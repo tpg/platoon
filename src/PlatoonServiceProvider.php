@@ -8,6 +8,9 @@ use Illuminate\Support\ServiceProvider;
 use TPG\Platoon\Console\CleanupCommand;
 use TPG\Platoon\Console\DeployCommand;
 use TPG\Platoon\Console\PublishCommand;
+use TPG\Platoon\Console\ReleasesListCommand;
+use TPG\Platoon\Console\ReleasesRollbackCommand;
+use TPG\Platoon\Console\ReleasesSetCommand;
 use TPG\Platoon\Console\TargetsCommand;
 use TPG\Platoon\Contracts\PlatoonContract;
 
@@ -32,6 +35,9 @@ class PlatoonServiceProvider extends ServiceProvider
             CleanupCommand::class,
             DeployCommand::class,
             PublishCommand::class,
+            ReleasesListCommand::class,
+            ReleasesRollbackCommand::class,
+            ReleasesSetCommand::class,
             TargetsCommand::class,
         ];
 

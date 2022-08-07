@@ -23,8 +23,8 @@ class TagExpander
     {
         $replacement = [
             '/@php/' => $this->target->php,
-            '/@artisan/' => $this->target->php.' '.$this->target->paths('serve').'/artisan',
-            '/@composer/' => $this->target->php.' '.$this->target->composer,
+            '/@artisan/' => $this->target->artisan(),
+            '/@composer/' => $this->target->composer(),
             '/@base/' => $this->target->path,
         ];
 

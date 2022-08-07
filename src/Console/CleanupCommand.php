@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace TPG\Platoon\Console;
 
-use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 use Symfony\Component\Process\Process;
 
-class CleanupCommand extends Command
+class CleanupCommand extends PlatoonCommand
 {
     protected $signature = 'platoon:cleanup {--k|keep=2 : Number if deployments to keep installed}';
 

@@ -6,33 +6,71 @@ namespace TPG\Platoon;
 
 use Illuminate\Support\Arr;
 use Spatie\LaravelData\Data;
+use TPG\Platoon\Contracts\TargetContract;
 
-class Target extends Data
+class Target implements TargetContract
 {
     protected array $config;
 
+    /**
+     * @var string
+     */
     public readonly string $name;
+
+    /**
+     * @var string
+     */
     public readonly string $host;
+
+    /**
+     * @var int
+     */
     public readonly ?int $port;
+
+    /**
+     * @var string|null
+     */
     public readonly ?string $username;
+
+    /**
+     * @var string
+     */
     public readonly string $path;
+
+    /**
+     * @var string
+     */
     public readonly string $php;
+
+    /**
+     * @var string
+     */
     public readonly string $composer;
+
+    /**
+     * @var string
+     */
     public readonly string $branch;
+
+    /**
+     * @var bool
+     */
     public readonly bool $migrate;
+
+    /**
+     * @var array<string, string>
+     */
     public readonly array $assets;
 
-    protected array $paths = [
-        'releases' => 'releases',
-        'serve' => 'live',
-        'storage' => 'storage',
-        '.env' => '.env',
-    ];
-
-    public readonly string $hostString;
     /**
-     * @var array|\ArrayAccess|mixed
+     * @var array<string, string>
      */
+    protected readonly array $paths;
+
+    /**
+     * @var string
+     */
+    public readonly string $hostString;
 
     public function __construct(string $name, array $config)
     {
@@ -40,22 +78,24 @@ class Target extends Data
 
         $this->name = $name;
         $this->host = Arr::get($config, 'host');
-        $this->port = Arr::get($config, 'port', 22);
-        $this->username = Arr::get($config, 'username');
+        $this->port = Arr::get($config, 'port');
+        $this->username = Arr::get($config, 'username', null);
         $this->path = Arr::get($config, 'path');
         $this->php = Arr::get($config, 'php', '/usr/bin/php');
         $this->composer = Arr::get($config, 'composer', $this->path.'/composer.phar');
         $this->branch = Arr::get($config, 'branch', 'main');
         $this->migrate = Arr::get($config, 'migrate', false);
         $this->assets = Arr::get($config, 'assets', []) ?? [];
-        $this->paths = [
-            ...$this->paths,
-            ...Arr::get($config, 'paths', []),
-        ];
+        $this->paths = Arr::get($config, 'paths');
 
         $this->hostString = $this->getHostString();
     }
 
+    /**
+     * Get the complete host connection string
+     *
+     * @return string
+     */
     protected function getHostString(): string
     {
         $parts = [
@@ -67,6 +107,13 @@ class Target extends Data
         return implode('', $parts);
     }
 
+    /**
+     * Get the fully-qualified path for the specified path-name
+     *
+     * @param  string  $pathName
+     * @param  string|null  $suffix
+     * @return string
+     */
     public function paths(string $pathName, string $suffix = null): string
     {
         if (! Arr::has($this->paths, $pathName)) {
@@ -82,6 +129,11 @@ class Target extends Data
         return implode('/', $parts->whereNotNull()->toArray());
     }
 
+    /**
+     * Get the fully-qualified path to the composer binary.
+     *
+     * @return string
+     */
     public function composer(): string
     {
         if (! str_contains($this->composer, '/')) {
@@ -91,15 +143,22 @@ class Target extends Data
         return $this->php.' '.$this->composer;
     }
 
-    public function artisan(bool $fullPath = false): string
+    /**
+     * Get the fully qualified path to the Artisan executable.
+     *
+     * @return string
+     */
+    public function artisan(): string
     {
-        if (! $fullPath) {
-            return $this->php.' ./artisan';
-        }
-
         return $this->php.' '.$this->paths('serve').'/artisan';
     }
 
+    /**
+     * Get the fully-qualified path to the specified project path.
+     *
+     * @param  string  $release
+     * @return array
+     */
     public function assets(string $release): array
     {
         return collect($this->assets)->mapWithKeys(
@@ -107,6 +166,12 @@ class Target extends Data
         )->toArray();
     }
 
+    /**
+     * Get an array of hook-in commands for the specified step.
+     *
+     * @param  string  $step
+     * @return array<string>
+     */
     public function hooks(string $step): array
     {
         $expander = new TagExpander($this);

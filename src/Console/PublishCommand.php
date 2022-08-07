@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace TPG\Platoon\Console;
 
-use Illuminate\Console\Command;
 use Illuminate\Foundation\Console\VendorPublishCommand;
 use TPG\Platoon\PlatoonServiceProvider;
 
-class PublishCommand extends Command
+class PublishCommand extends PlatoonCommand
 {
     protected $signature = 'platoon:publish {--force} {--script}';
 

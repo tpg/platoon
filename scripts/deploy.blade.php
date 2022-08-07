@@ -1,4 +1,4 @@
-@include ('./vendor/autoload.php')
+{{--@include ('./vendor/autoload.php')--}}
 
 {{-- Platoon Deployment Script
 -------------------------------------------------------------------
@@ -242,6 +242,27 @@ cd {{ $target->path }}
 
 @endtask
 
+{{-- Rollback
+-------------------------------------------------------------------
+List the current releases on the target
+-------------------------------------------------------------------}}
+@task('releases:list', ['on' => 'live'])
+
+{{ $target->artisan() }} platoon:releases:list
+
+@endtask
+
+@task('releases:set', ['on' => 'live'])
+
+{{ $target->artisan() }} platoon:releases:set {{ $setRelease }}
+
+@endtask
+
+@task('releases:rollback', ['on' => 'live'])
+
+{{ $target->artisan() }} platoon:releases:rollback
+
+@endtask
 
 {{-- The "Deploy" story
 -------------------------------------------------------------------
