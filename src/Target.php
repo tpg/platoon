@@ -175,6 +175,6 @@ class Target implements TargetContract
     public function hooks(string $step): array
     {
         $expander = new TagExpander($this);
-        return array_map(fn (array $commands) => $expander->expand($commands), Arr::get($this->config, 'hooks.'.$step, []) ?? []);
+        return array_map(fn (array $command) => $expander->expand($command), Arr::get($this->config, 'hooks.'.$step, []) ?? []);
     }
 }

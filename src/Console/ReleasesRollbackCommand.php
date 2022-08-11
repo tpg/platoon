@@ -18,9 +18,8 @@ class ReleasesRollbackCommand extends PlatoonCommand
             return $this->runOnTarget('releases:rollback');
         }
 
-        $path = Str::before(base_path('..'), '/releases');
-        $releases = $this->platoon->releases($path);
-        $active = $this->platoon->activeRelease($path);
+        $releases = $this->platoon->releases();
+        $active = $this->platoon->activeRelease();
 
         if (! $active) {
             $this->error('No active release. Cannot rollback');
@@ -34,10 +33,11 @@ class ReleasesRollbackCommand extends PlatoonCommand
             return self::INVALID;
         }
 
+        $path = Str::before(base_path('..'), '/releases');
+
         if (file_exists($path.'/'.$this->platoon->paths('serve'))) {
             unlink($path.'/'.$this->platoon->paths('serve'));
         }
-
 
         $newRelease = $releases[$index -1];
 

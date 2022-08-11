@@ -10,16 +10,7 @@ class TagExpander
     {
     }
 
-    public function expand(string|array $commands): array
-    {
-        if (is_string($commands)) {
-            $commands = [$commands];
-        }
-
-        return array_map(fn ($command) => $this->expandString($command), $commands);
-    }
-
-    protected function expandString(string $command): string
+    public function expand(string $command): array
     {
         $replacement = [
             '/@php/' => $this->target->php,
