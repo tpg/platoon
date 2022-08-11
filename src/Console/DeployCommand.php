@@ -8,13 +8,14 @@ use Symfony\Component\Process\Process;
 
 class DeployCommand extends PlatoonCommand
 {
-    protected $signature = 'platoon:deploy {target}';
+    protected $signature = 'platoon:deploy {target?}';
 
     protected $description = 'Run the deployment script';
 
     public function handle(): int
     {
-        $command = $this->platoon->getEnvoyCommand($this->argument('target'), 'deploy');
+        $target = $this->argument('target') ? $this->platoon->target($this->argument('target')) : $this->platoon->defaultTarget();
+        $command = $this->platoon->getEnvoyCommand($target->name, 'deploy');
         $process = Process::fromShellCommandline($command, base_path(), timeout: 0);
 
         $process->setTty(Process::isTtySupported());
