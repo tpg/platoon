@@ -10,7 +10,7 @@ class TagExpander
     {
     }
 
-    public function expand(string $command): array
+    public function expand(string $command): ?string
     {
         $replacement = [
             '/@php/' => $this->target->php,
