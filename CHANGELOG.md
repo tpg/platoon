@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v0.3.0 - 2022-08-11
+
+- Added a `releases:list` command
+- Added a `releases:set` command
+- Added a `releases:rollback` command
+- Fixed a bug in the text expander for hooks.
+
 ## v0.2.0 - 2022-08-04
 
 This version brings basic tag expansion to the hooks system. You can now use things like `@php` or `@artisan`. The hooks have also been updated a little to ensure that remote hooks run from the project root by default.
