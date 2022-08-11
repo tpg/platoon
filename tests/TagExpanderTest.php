@@ -12,7 +12,7 @@ it('can expand tags in an array of commands', function () {
 
     $expander = new \TPG\Platoon\TagExpander(platoon()->target('staging'));
 
-    $expanded = $expander->expand($commands);
+    $expanded = array_map(fn ($command) => $expander->expand($command), $commands);
 
     $this->assertSame([
         '/usr/bin/php ./artisan serve',
