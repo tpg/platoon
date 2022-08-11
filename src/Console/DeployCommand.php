@@ -14,7 +14,7 @@ class DeployCommand extends PlatoonCommand
 
     public function handle(): int
     {
-        $command = $this->platoon->getEnvoyCommand($this->argument('server'), 'deploy');
+        $command = $this->platoon->getEnvoyCommand($this->argument('target'), 'deploy');
         $process = Process::fromShellCommandline($command, base_path(), timeout: 0);
 
         $process->setTty(Process::isTtySupported());
