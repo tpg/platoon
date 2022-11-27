@@ -7,9 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## v0.3.2 - 2022-11-27
 
-Cleaned up the docs a little and completed some small changes.
-
-See the `CHANGELOG.md` file for details.
+- Updated `composer.json` script to place config correctly.
+- Updated `publish` command to support the Envoy script.
+- Renamed the `live` server to `target` in the Envoy script.
+- A few updates to the documentation
 
 ## v0.3.1 - 2022-11-23
 
