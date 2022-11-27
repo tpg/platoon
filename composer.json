@@ -38,11 +38,6 @@
             ]
         }
     },
-    "scripts": {
-        "post-package-install": [
-            "@php artisan vendor:publish --tag=platoon-config --ansi --force"
-        ]
-    },
     "config": {
         "allow-plugins": {
             "pestphp/pest-plugin": true

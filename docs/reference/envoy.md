@@ -19,9 +19,9 @@ or...
 php ./artisan vendor:publish --tag=platoon-envoy
 ```
 
-This will place an `Envoy.blade.php` file at the root of app. If you're interested in learning more about Envoy (and we strongly encourage you to do so), take a look through the [documentation](https://laravel.com/docs/envoy).
+This will place an `Envoy.blade.php` file at the root of the app. If you're interested in learning more about Envoy (and we strongly encourage you to do so), take a look through the [official documentation](https://laravel.com/docs/envoy).
 
-You shouldn't actually need to publish the Envoy script, and if you're simply trying to add commands to each task, take a look at [Hooks](/reference/config.html#hooks) in the config reference. You can add functionality to each step without needing the Envoy script at all.
+You shouldn't really need to publish the Envoy script, and if you're simply trying to add commands to each task, take a look at [Hooks](/reference/config.html#hooks) in the config reference. You can add functionality to each step without needing the Envoy script at all.
 
 The Envoy script is broken up into the separate Platoon tasks (build, install, composer, etc...), and are run in sequence using the `deploy` story:
 

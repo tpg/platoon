@@ -13,19 +13,23 @@ Like everything Laravel, Platoon is installed using Composer:
 composer require thepublicgood/platoon
 ```
 
-Once installed, you'll find a new `platoon.php` config file in your app's `config` directory and a few new Artisan commands in the `platoon` namespace. Open the config file and make changes to reflect your deployment environment. This will likely include the hostname or IP address, the SSH port, username and the path where your application will be stored.
+Once installed, run the `platoon:publish` command to place the `platoon.php` config file in your `config` directory:
 
-There are some comments in the config file, and it should be fairly self-explanatory, but you should also take a look at the [Config Reference](/reference/config.html) for more details on what the Platoon can be used to do.
+```shell
+php ./artisan platoon:publish
+```
+
+You'll want to spend a bit of time going through the config file and the [Config Reference](/reference/config.html). However, the most important part is to ensure your targets are set up correctly.
 
 ## Server Configuration
 
 You'll also need to log into your target host and ensure that you can use SSH keys to authenticate. Platoon does not support password authentication. You'll also need to ensure your web server can serve a symbolic link. If you're an Nginx user, there's likely not much you'll need to change, but for Apache, you'll need to ensure you have the `+FollowSymLinks` option set.
 
-In your `platoon.php` config file, you need to provide a `path` setting. This is the project root directory and not the path you should point your web server at. Instead, this is the ROOT path where platoon will place everything related to your project.
+In your `platoon.php` config file, you need to provide a `path` setting. This is NOT the path you should point your web server at. Instead, this is the ROOT path where platoon will place everything related to your project.
 
 Your web server will need to configured to serve the `live` symbolic link that Platoon will create during deployment. So for example, if your application root is `/opt/my/application`, then your web server should serve `/opt/my/application/live`. The `live` symbolic link will point to a directory Platoon will create in the `releases` directory.
 
-For a more detailed explanation of the directory structure, take a look at the [Directory Structure](/platoon/reference/config.html#directory-structure) section.
+For a more detailed explanation of the directory structure, take a look at the [Directory Structure](/platoon/reference/config.html#directory-structure) section of the config reference.
 
 ## Deploy
 Once you're all configured and your target has been set up, you're ready to deploy. Platoon provides a simple command through Artisan. To deploy, simply run:
