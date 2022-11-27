@@ -16,7 +16,7 @@ $target = $helper->target($server);
 
 @endsetup
 
-@servers(['local' => $helper->localhost, 'live' => $target->hostString])
+@servers(['local' => $helper->localhost, 'target' => $target->hostString])
 
 {{-- Build task
 -------------------------------------------------------------------
@@ -37,7 +37,7 @@ production) then this is the place to do it.
 This task gets the software onto the server. It will clone the
 repo and link the .env file and storage directory.
 -------------------------------------------------------------------}}
-@task('install', ['on' => 'live'])
+@task('install', ['on' => 'target'])
 
 echo "Installing."
 [[ ! -d "{{ $target->paths('releases') }}" ]] && mkdir {{ $target->paths('releases') }}
@@ -57,7 +57,7 @@ cd {{ $target->path }}
 -------------------------------------------------------------------
 Prepare the target directory for the project.
 -------------------------------------------------------------------}}
-@task('prep', ['on' => 'live'])
+@task('prep', ['on' => 'target'])
 
 echo "Preparing installation."
 cd {{ $target->path }}
@@ -86,7 +86,7 @@ cd {{ $target->path }}
 Check if composer exists at the specified path. If not, then
 download the latest release.
 -------------------------------------------------------------------}}
-@task('composer', ['on' => 'live'])
+@task('composer', ['on' => 'target'])
 
 # Check if composer exists and install it.
 
@@ -126,7 +126,7 @@ cd {{ $target->path }}
 This task gets the software onto the server. It will clone the
 repo and link the .env file and storage directory.
 -------------------------------------------------------------------}}
-@task('dependencies', ['on' => 'live'])
+@task('dependencies', ['on' => 'target'])
 
 echo "Installing composer dependencies."
 
@@ -169,7 +169,7 @@ You can migrate database chages automatically. However this
 task is OFF by default as it could be potentially dangerous. You
 can turn it on in the config.
 -------------------------------------------------------------------}}
-@task('database', ['on' => 'live'])
+@task('database', ['on' => 'target'])
 
 # Only run this if we are allowed to migrate
 @if ($target->migrate)
@@ -211,7 +211,7 @@ cd {{ $target->path }}
 Clean up any old deployments that are still on the target.
 We'll leave the previous one intact just in case you need it.
 -------------------------------------------------------------------}}
-@task('cleanup', ['on' => 'live'])
+@task('cleanup', ['on' => 'target'])
 
 echo "Cleaning up."
 cd {{ $target->paths('serve') }}
@@ -230,10 +230,9 @@ Finish the deployment. This task is run after cleanup and is
 used to complete any tasks needed to finish up the deployment.
 This is a good place to restart or reload any required services.
 -------------------------------------------------------------------}}
-@task('finish', ['on' => 'live'])
+@task('finish', ['on' => 'target'])
 
 php -r "function_exists('opcache_reset') ? opcache_reset() : null;"
-echo "Release {{ $release }} is now live."
 
 cd {{ $target->path }}
 @foreach ($target->hooks('finish') as $step)
@@ -246,7 +245,7 @@ cd {{ $target->path }}
 -------------------------------------------------------------------
 List the current releases on the target
 -------------------------------------------------------------------}}
-@task('releases:list', ['on' => 'live'])
+@task('releases:list', ['on' => 'target'])
 
 {{ $target->artisan() }} platoon:releases:list
 
@@ -256,11 +255,15 @@ List the current releases on the target
 
 {{ $target->artisan() }} platoon:releases:set {{ $setRelease }}
 
+php -r "function_exists('opcache_reset') ? opcache_reset() : null;"
+
 @endtask
 
-@task('releases:rollback', ['on' => 'live'])
+@task('releases:rollback', ['on' => 'target'])
 
 {{ $target->artisan() }} platoon:releases:rollback
+
+php -r "function_exists('opcache_reset') ? opcache_reset() : null;"
 
 @endtask
 

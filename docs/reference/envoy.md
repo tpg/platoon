@@ -10,6 +10,12 @@ Platoon is really just a wrapper around Envoy. You could do everything that Plat
 Since Platoon just wraps Laravel Envoy, there is a default Envoy script at it's heart. If you feel the need to modify the script, you can publish the Envoy script with:
 
 ```shell
+php ./artisan platoon:plublish --envoy
+```
+
+or...
+
+```shell
 php ./artisan vendor:publish --tag=platoon-envoy
 ```
 

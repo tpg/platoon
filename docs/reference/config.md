@@ -34,12 +34,13 @@ Platoon does not support password authentication. Your targets MUST be accessibl
 :::
 
 | Target setting | Default | Description |
+|----------------|---------|-------------|
 | `host` | - | The hostname or IP address of the remote target |
 | `port` | 22 | The SSH port number |
 | `username` | - | The SSH username |
 | `path` | - | The path to the project root |
 | `php` | `/usr/bin/php` | The full path to the PHP binary |
-| `composer` | `<project-root>/composer.phar` | The full path to where composer.phar is stored |
+| `composer` | `<project-root>/composer.phar` | The full path to where composer.phar is stored. Defaults to the project root. |
 | `branch` | `main` | The branch to clone |
 | `migrate` | `false` | Migrate database changes on the target |
 | `assets` | `[]` | Assets to copy during deployment. See [Assets](#assets) |
@@ -85,6 +86,7 @@ You can change the names of the directories that Platoon will create. In most ca
 ```
 
 | Path Config | Default | Description |
+|-------------|---------|-------------|
 | `releases`  | `releases` | The directory where new releases are deployed |
 | `live` | `live` | The name of the symbolic link that the web server should serve |
 | `storage` | `storage` | The name of the Laravel storage directory |

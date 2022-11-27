@@ -142,6 +142,7 @@ class Platoon implements PlatoonContract
      *
      * @param  string  $target
      * @param  string  $task
+     * @param  array  $options
      * @return string
      */
     public function getEnvoyCommand(string $target, string $task, array $options = []): string

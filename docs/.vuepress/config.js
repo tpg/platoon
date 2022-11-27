@@ -1,4 +1,4 @@
-const { defaultTheme } = require('@vuepress/theme-default')
+import { defaultTheme } from '@vuepress/theme-default';
 
 module.exports = {
     lang: 'en-US',
@@ -9,8 +9,8 @@ module.exports = {
         repo: 'thepublicgood/platoon',
         navbar: [
             {
-                text: 'Getting Started',
-                link: '/guide',
+                text: 'Guide',
+                link: '/guide/getting_started.html',
             },
             {
                 text: 'Reference',
@@ -20,9 +20,9 @@ module.exports = {
         sidebar: {
             '/guide/': [
                 {
-                    text: 'Getting Started',
-                    children: ['/guide/README.md'],
-                }
+                    text: 'Guide',
+                    children: ['/guide/getting_started.md', '/guide/releases.md'],
+                },
             ],
             '/reference/': [
                 {

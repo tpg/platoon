@@ -3,7 +3,7 @@ home: true
 tagline: Laravel Zero-downtime Deployments... Easy. Serisouly.
 actions:
     - text: Getting Started
-      link: '/guide'
+      link: '/guide/getting_started.html'
     - text: Reference
       link: '/reference/config.html'
 features:

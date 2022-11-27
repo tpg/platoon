@@ -9,7 +9,7 @@ use TPG\Platoon\PlatoonServiceProvider;
 
 class PublishCommand extends PlatoonCommand
 {
-    protected $signature = 'platoon:publish {--force} {--script}';
+    protected $signature = 'platoon:publish {--force} {--envoy}';
 
     protected $description = 'Publish the platoon config';
 
@@ -20,6 +20,14 @@ class PublishCommand extends PlatoonCommand
             '--tag' => 'platoon-config',
             '--force' => $this->option('force'),
         ]);
+
+        if ($this->option('envoy')) {
+            $this->call(VendorPublishCommand::class, [
+                '--provider' => PlatoonServiceProvider::class,
+                '--tag' => 'platoon-envoy',
+                '--force' => $this->option('force'),
+            ]);
+        }
 
         return self::SUCCESS;
     }
