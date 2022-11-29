@@ -191,7 +191,7 @@ cd {{ $target->path }}
 The final task is to make the deployment live by creating a
 symlink to the new deployment from the "serve" path.
 -------------------------------------------------------------------}}
-@task('live', ['on' => 'live'])
+@task('live', ['on' => 'target'])
 
 echo "Going live."
 ln -nfs {{ $target->paths('releases', $release) }} {{ $target->paths('serve') }}
