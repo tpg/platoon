@@ -251,7 +251,7 @@ List the current releases on the target
 
 @endtask
 
-@task('releases:set', ['on' => 'live'])
+@task('releases:set', ['on' => 'target'])
 
 {{ $target->artisan() }} platoon:releases:set {{ $setRelease }}
 
