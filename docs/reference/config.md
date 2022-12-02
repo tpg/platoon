@@ -46,6 +46,36 @@ Platoon does not support password authentication. Your targets MUST be accessibl
 | `assets` | `[]` | Assets to copy during deployment. See [Assets](#assets) |
 | `hooks` | `[]` | The hooks to run. See [Hooks](#hooks) |
 | `paths` | `[]` | Any changes to directory structure. See [Directory Structure](#directory-structure) |
+
+### Extra options
+It's also possible to include a few additional options to the target config. At the moment, the option extra option supported is `composer-flags`. When running Composer, Platoon will run the following:
+
+```shell
+composer install --prefer-dist --no-dev --no-progress -optimize-autoloader
+```
+
+If you ever needed to change the flags passed to the Composer CLI, you can use the `extra.composer-flag` option:
+
+```php
+return [
+    'targets' => [
+        'dev' => [
+            // ...
+            'extra' => [
+                'composer-flags' => [
+                    '--dev',
+                    '--optimize-autoloader',
+                ],
+            ],
+        ],
+    ],
+];
+```
+
+::: tip Note
+The `--no-progress` flag is always set.
+:::
+
 ## Directory structure
 The `path` setting refers to the ROOT directory where the project is stored. In this root directory, Platoon will place all the bits needed for your project. By default there is a `releases` directory, a `storage` directory, a `.env` file and a symbolic link named `live`. During deployment, Platoon will create symbolic links for the `.env` file and `storage` directory into a new directory created in `releases`. A typical project directory structure looks something like this:
 

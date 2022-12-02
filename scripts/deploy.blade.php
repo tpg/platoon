@@ -132,7 +132,7 @@ echo "Installing composer dependencies."
 
 cd {{ $target->paths('releases', $release) }}
 {{ $target->composer() }} self-update
-{{ $target->composer() }} install --prefer-dist --no-dev --no-progress --optimize-autoloader
+{{ $target->composer() }} install {{ $target->composerFlags() }}
 
 cd {{ $target->path }}
 @foreach ($target->hooks('dependencies') as $step)

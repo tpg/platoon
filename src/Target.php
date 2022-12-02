@@ -72,6 +72,11 @@ class Target implements TargetContract
      */
     public readonly string $hostString;
 
+    /**
+     * @var array<string>
+     */
+    protected readonly array $extra;
+
     public function __construct(string $name, array $config)
     {
         $this->config = $config;
@@ -87,6 +92,7 @@ class Target implements TargetContract
         $this->migrate = Arr::get($config, 'migrate', false);
         $this->assets = Arr::get($config, 'assets', []) ?? [];
         $this->paths = Arr::get($config, 'paths');
+        $this->extra = Arr::get($config, 'extra', []);
 
         $this->hostString = $this->getHostString();
     }
@@ -141,6 +147,22 @@ class Target implements TargetContract
         }
 
         return $this->php.' '.$this->composer;
+    }
+
+    /**
+     * Get a string of flags to pass to the Composer CLI.
+     *
+     * @return string
+     */
+    public function composerFlags(): string
+    {
+        return implode(' ', [
+            '--no-progress',
+            ...Arr::get($this->config, 'extra.composer-flags', [
+                '--no-dev',
+                '--optimize-autoloader',
+            ]),
+        ]);
     }
 
     /**

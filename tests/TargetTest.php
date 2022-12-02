@@ -53,10 +53,32 @@ it('will return the fully qualified Composer path', function () {
 
 });
 
+it('will return a string of default composer flags', function () {
+
+    $target = platoon()->defaultTarget();
+
+    $this->assertSame('--no-progress --no-dev --optimize-autoloader', $target->composerFlags());
+
+});
+
+it('will return a string of custom composer flags', function () {
+
+    config(['platoon.targets.staging.extra.composer-flags' => [
+        '--dev',
+        '--prefer-install=source'
+    ]]);
+
+    $target = platoon()->defaultTarget();
+
+    $this->assertSame('--no-progress --dev --prefer-install=source', $target->composerFlags());
+
+});
+
 it('will return the fully qualified Artisan path', function () {
     $target = platoon()->defaultTarget();
 
     $this->assertSame($target->php.' '.$target->paths('serve').'/artisan', $target->artisan(true));
+
 });
 
 it('will throw an exception if the path name doesnt exist', function () {
