@@ -16,6 +16,13 @@ interface PlatoonContract
     public function targets(): Collection;
 
     /**
+     * Validates the Platoon configuration and returns an array of error messages.
+     *
+     * @return array
+     */
+    public function validateConfig(): array;
+
+    /**
      * @param  string  $name
      * @param  string|null  $release
      * @return Target

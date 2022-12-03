@@ -19,6 +19,11 @@ class Platoon implements PlatoonContract
         $this->config = $config ?? config('platoon');
     }
 
+    public function validateConfig(): array
+    {
+        return (new ConfigValidator($this->config))->errors();
+    }
+
     /**
      * @return Collection<Target>
      */

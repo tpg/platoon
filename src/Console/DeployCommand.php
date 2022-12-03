@@ -14,6 +14,8 @@ class DeployCommand extends PlatoonCommand
 
     public function handle(): int
     {
+        $this->validatedConfig();
+
         $target = $this->argument('target') ? $this->platoon->target($this->argument('target')) : $this->platoon->defaultTarget();
         $command = $this->platoon->getEnvoyCommand($target->name, 'deploy');
         $process = Process::fromShellCommandline($command, base_path(), timeout: 0);
