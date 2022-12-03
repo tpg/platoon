@@ -41,7 +41,7 @@ it('will return the requested path', function () {
 
     $target = platoon()->defaultTarget();
 
-    $this->assertSame($target->path.'/releases', $target->paths('releases'));
+    $this->assertSame($target->root.'/releases', $target->paths('releases'));
 
 });
 

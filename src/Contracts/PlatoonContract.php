@@ -17,9 +17,10 @@ interface PlatoonContract
 
     /**
      * @param  string  $name
+     * @param  string|null  $release
      * @return Target
      */
-    public function target(string $name): Target;
+    public function target(string $name, ?string $release = null): Target;
 
     /**
      * @return Target

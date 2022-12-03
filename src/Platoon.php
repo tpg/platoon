@@ -31,16 +31,17 @@ class Platoon implements PlatoonContract
 
     /**
      * @param  string  $name
+     * @param  string|null  $release
      * @return Target
      */
-    public function target(string $name): Target
+    public function target(string $name, ?string $release = null): Target
     {
         $data = array_merge($this->common(), Arr::get($this->config, 'targets.'.$name));
 
         return new Target($name, [
             ...$data,
             'paths' => $this->paths(),
-        ]);
+        ], $release);
     }
 
     /**

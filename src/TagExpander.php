@@ -16,7 +16,8 @@ class TagExpander
             '/@php/' => $this->target->php,
             '/@artisan/' => $this->target->artisan(),
             '/@composer/' => $this->target->composer(),
-            '/@base/' => $this->target->path,
+            '/@base/' => $this->target->root,
+            '/@release/' => $this->target->release,
         ];
 
         return preg_replace(array_keys($replacement), array_values($replacement), $command);

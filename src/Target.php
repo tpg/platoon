@@ -10,63 +10,6 @@ use TPG\Platoon\Contracts\TargetContract;
 
 class Target implements TargetContract
 {
-    protected array $config;
-
-    /**
-     * @var string
-     */
-    public readonly string $name;
-
-    /**
-     * @var string
-     */
-    public readonly string $host;
-
-    /**
-     * @var int
-     */
-    public readonly ?int $port;
-
-    /**
-     * @var string|null
-     */
-    public readonly ?string $username;
-
-    /**
-     * @var string
-     */
-    public readonly string $path;
-
-    /**
-     * @var string
-     */
-    public readonly string $php;
-
-    /**
-     * @var string
-     */
-    public readonly string $composer;
-
-    /**
-     * @var string
-     */
-    public readonly string $branch;
-
-    /**
-     * @var bool
-     */
-    public readonly bool $migrate;
-
-    /**
-     * @var array<string, string>
-     */
-    public readonly array $assets;
-
-    /**
-     * @var array<string, string>
-     */
-    protected readonly array $paths;
-
     /**
      * @var string
      */
@@ -77,25 +20,20 @@ class Target implements TargetContract
      */
     protected readonly array $extra;
 
-    public function __construct(string $name, array $config)
+    public function __construct(
+        public readonly string $name,
+        protected readonly array $config,
+        protected readonly ?string $release = null
+    )
     {
-        $this->config = $config;
-
-        $this->name = $name;
-        $this->host = Arr::get($config, 'host');
-        $this->port = Arr::get($config, 'port');
-        $this->username = Arr::get($config, 'username', null);
-        $this->path = Arr::get($config, 'path');
-        $this->php = Arr::get($config, 'php', '/usr/bin/php');
-        $this->composer = Arr::get($config, 'composer', $this->path.'/composer.phar');
-        $this->branch = Arr::get($config, 'branch', 'main');
-        $this->migrate = Arr::get($config, 'migrate', false);
-        $this->assets = Arr::get($config, 'assets', []) ?? [];
-        $this->paths = Arr::get($config, 'paths');
-        $this->extra = Arr::get($config, 'extra', []);
-
         $this->hostString = $this->getHostString();
     }
+
+    public function config(string $key, mixed $default = null): mixed
+    {
+        return Arr::get($this->config, $key, $default);
+    }
+
 
     /**
      * Get the complete host connection string
@@ -104,10 +42,14 @@ class Target implements TargetContract
      */
     protected function getHostString(): string
     {
+        $username = $this->config('username');
+        $host = $this->config('host');
+        $port = $this->config('port');
+
         $parts = [
-            $this->username ? $this->username.'@' : null,
-            $this->host,
-            $this->port ? ' -p'.$this->port : '',
+            $username ? $username.'@' : null,
+            $host,
+            $port ? ' -p'.$port : '',
         ];
 
         return implode('', $parts);
@@ -122,13 +64,15 @@ class Target implements TargetContract
      */
     public function paths(string $pathName, string $suffix = null): string
     {
-        if (! Arr::has($this->paths, $pathName)) {
+        $paths = $this->config('paths');
+
+        if (! Arr::has($paths, $pathName)) {
             throw new \RuntimeException('No defined path named '.$pathName);
         }
 
         $parts = collect([
-            $this->path,
-            $this->paths[$pathName],
+            $this->config('root'),
+            Arr::get($paths, $pathName),
             $suffix,
         ]);
 
@@ -142,11 +86,11 @@ class Target implements TargetContract
      */
     public function composer(): string
     {
-        if (! str_contains($this->composer, '/')) {
-            return $this->composer;
+        if (! str_contains($this->config('composer'), '/')) {
+            return $this->config('composer');
         }
 
-        return $this->php.' '.$this->composer;
+        return $this->config('php').' '.$this->config('composer');
     }
 
     /**
@@ -158,7 +102,7 @@ class Target implements TargetContract
     {
         return implode(' ', [
             '--no-progress',
-            ...Arr::get($this->config, 'extra.composer-flags', [
+            ...$this->config('extra.composer-flags', [
                 '--no-dev',
                 '--optimize-autoloader',
             ]),
@@ -172,7 +116,7 @@ class Target implements TargetContract
      */
     public function artisan(): string
     {
-        return $this->php.' '.$this->paths('serve').'/artisan';
+        return $this->config('php').' '.$this->paths('serve').'/artisan';
     }
 
     /**
@@ -183,8 +127,10 @@ class Target implements TargetContract
      */
     public function assets(string $release): array
     {
-        return collect($this->assets)->mapWithKeys(
-            fn($dest, $source) => [$source => $this->username.'@'.$this->host.':'.$this->paths('releases', $release).'/'.$dest]
+        $path = $this->config('username').'@'.$this->config('host');
+
+        return collect($this->config('assets'))->mapWithKeys(
+            fn($dest, $source) => [$source => $path.':'.$this->paths('releases', $release).'/'.$dest]
         )->toArray();
     }
 
@@ -197,6 +143,19 @@ class Target implements TargetContract
     public function hooks(string $step): array
     {
         $expander = new TagExpander($this);
-        return array_map(fn (string $command) => $expander->expand($command), Arr::get($this->config, 'hooks.'.$step, []) ?? []);
+        $hooks = $this->config('hooks');
+
+        return array_map(
+            static fn (string $command) => $expander->expand($command), Arr::get($hooks, $step, []) ?? []
+        );
+    }
+
+    public function __get(string $name)
+    {
+        if (property_exists($this, $name)) {
+            return $this->{$name};
+        }
+
+        return $this->config($name);
     }
 }
