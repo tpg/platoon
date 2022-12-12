@@ -15,6 +15,7 @@ class Envoy
     protected readonly array $config;
     protected readonly Collection $targets;
     protected readonly Platoon $platoon;
+    protected ?string $release = null;
 
     public function __construct()
     {
@@ -44,7 +45,7 @@ class Envoy
             throw new \RuntimeException('No target with name "'.$name.'"');
         }
 
-        return $this->platoon->target($name);
+        return $this->platoon->target($name, $this->release);
     }
 
     public function repo(): string
@@ -55,7 +56,7 @@ class Envoy
     public function newRelease(string $prefix = null, string $suffix = null): string
     {
         date_default_timezone_set('UTC');
-        return $prefix.date('YmdHis').$suffix;
+        return $this->release = $prefix.date('YmdHis').$suffix;
     }
 
 }

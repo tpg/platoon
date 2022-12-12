@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace TPG\Platoon\Console;
 
 use Illuminate\Console\Command as IlluminateCommand;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\Process\Process;
 use TPG\Platoon\Contracts\PlatoonContract;
 
@@ -15,6 +16,15 @@ abstract class PlatoonCommand extends IlluminateCommand
     protected function configure(): void
     {
         $this->platoon = app(PlatoonContract::class);
+    }
+
+    protected function validatedConfig(): void
+    {
+        $errors = $this->platoon->validateConfig();
+
+        if ($errors) {
+            throw ValidationException::withMessages($errors);
+        }
     }
 
     protected function runOnTarget(string $command, array $options = []): int

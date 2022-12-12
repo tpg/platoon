@@ -52,7 +52,7 @@ return [
             'host' => 'staging.test',
             'port' => 22,
             'username' => 'ssh-username',
-            'path' => '/path/to/application/root',
+            'root' => '/path/to/application/root',
             'php' => '/usr/bin/php',
             'composer' => '/path/to/composer.phar',
             'branch' => 'master',

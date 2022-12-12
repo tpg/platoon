@@ -5,9 +5,9 @@ description: Platoon configuration file reference
 ---
 
 # Configuration Reference
-The Platoon configuration is simple, and since it's a normal Laravel config file (which is really just a PHP file that returns an array), Laravel developers should feel right at home. The Platoon config is in the `platoon.php` file in your config directory. It is created automatically when requiring the Platoon package.
+The Platoon configuration is simple, and since it's a normal Laravel config file (which is really just a PHP file that returns an array), Laravel developers should feel right at home. The Platoon config is in the `platoon.php` file in your config directory. If it's not there, run the `platoon:publish` Artisan command.
 
-The config file houses all deployment information for the current project and you'll want to include this file in your repository. Platoon does not support password authentication, so you should not be including any sensitive authentication information in the config file.
+The config file houses all deployment information for the current project and in most cases you'll want to commit the file to your repo. Platoon does not support password authentication, so you should not be including any sensitive authentication information in the config file.
 
 ## Targets
 Targets are the hosts where your project will be deployed to. You can have as many targets as you need, but you must have at least one. A typical target configuration looks something like this:
@@ -18,7 +18,7 @@ Targets are the hosts where your project will be deployed to. You can have as ma
         'host' => 'staging.test',
         'port' => 22,
         'username' => 'ssh-username',
-        'path' => '/path/to/application/root',
+        'root' => '/path/to/application/root',
         'php' => '/usr/bin/php',
         'composer' => '/path/to/composer.phar',
         'branch' => 'master',
@@ -27,7 +27,7 @@ Targets are the hosts where your project will be deployed to. You can have as ma
 ]
 ```
 
-The `staging` key is the name of the target. You'll use this name to reference this target when deploying. The only required options are `host`, `username` and `path`. All the others have default values. There are also `assets` and `hooks` settings that are not required. You can find out more about them under the [Assets](#assets) and [Hooks](#hooks) sections.
+The `staging` key is the name of the target. You'll use this name to reference this target when deploying. The only required options are `host`, `username` and `root`. All the others have default values. There are also `assets` and `hooks` settings that are not required. You can find out more about them under the [Assets](#assets) and [Hooks](#hooks) sections.
 
 ::: tip Note
 Platoon does not support password authentication. Your targets MUST be accessible using SSH keys. This means you'll need to generate a local key pair and copy the public key to the server.
@@ -38,7 +38,7 @@ Platoon does not support password authentication. Your targets MUST be accessibl
 | `host` | - | The hostname or IP address of the remote target |
 | `port` | 22 | The SSH port number |
 | `username` | - | The SSH username |
-| `path` | - | The path to the project root |
+| `root` | - | The path to the project root |
 | `php` | `/usr/bin/php` | The full path to the PHP binary |
 | `composer` | `<project-root>/composer.phar` | The full path to where composer.phar is stored. Defaults to the project root. |
 | `branch` | `main` | The branch to clone |
@@ -46,6 +46,10 @@ Platoon does not support password authentication. Your targets MUST be accessibl
 | `assets` | `[]` | Assets to copy during deployment. See [Assets](#assets) |
 | `hooks` | `[]` | The hooks to run. See [Hooks](#hooks) |
 | `paths` | `[]` | Any changes to directory structure. See [Directory Structure](#directory-structure) |
+
+::: warning Note
+For versions 0.3.4 and older the `root` target option was named `path`. Version 1.0 will validate configuration and you'll get a warning.
+:::
 
 ### Extra options
 It's also possible to include a few additional options to the target config. At the moment, the option extra option supported is `composer-flags`. When running Composer, Platoon will run the following:
