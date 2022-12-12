@@ -102,6 +102,7 @@ class ConfigValidator
                 'array',
             ],
             'hooks.*' => [
+                'nullable',
                 'array'
             ]
         ], $key);
