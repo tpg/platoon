@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v1.0.0-beta.1 - 2022-12-12
+
+First beta release for version 1.
+
+- There are some config changes (the most important being the renaming of `path` as `root`).
+- A `@release` tag has been added for use in hook scripts.
+- There's also been some refactoring.
+- Documentation has been updated with the changes.
+
 ## v0.3.4 - 2022-12-02
 
 - Includes a new `extra` target settings which can be used to pass additional information to the target. For now, only `composer-flag` is supported.
