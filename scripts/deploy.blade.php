@@ -92,7 +92,7 @@ download the latest release.
 
 if [[ ! -f "{{ $target->composer }}" ]]
 then
-    echo "Installing composer."
+    echo "Installing composer to {{ $target->path }}."
     cd {{ $target->path }}
     EXPECTED_CHECKSUM="$({{ $target->php }} -r 'copy("https://composer.github.io/installer.sig", "php://stdout");')"
     {{ $target->php }} -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
