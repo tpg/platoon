@@ -45,7 +45,7 @@ echo "Installing."
 cd {{ $target->paths('releases') }}
 git clone --depth 50 -b {{ $target->branch }} "{{ $helper->repo() }}" {{ $release }}
 
-cd {{ $target->path }}
+cd {{ $target->root }}
 @foreach ($target->hooks('install') as $step)
     {{ $step }}
 @endforeach
@@ -60,7 +60,7 @@ Prepare the target directory for the project.
 @task('prep', ['on' => 'target'])
 
 echo "Preparing installation."
-cd {{ $target->path }}
+cd {{ $target->root }}
 
 if [[ ! -d "{{ $target->paths('storage') }}" ]]
 then
@@ -74,7 +74,7 @@ rm -f {{ $target->paths('releases', $release) }}/.env
 ln -nfs {{ $target->paths('.env') }} {{ $target->paths('releases', $release) }}/.env
 ln -nfs {{ $target->paths('storage') }} {{ $target->paths('releases', $release) }}/storage
 
-cd {{ $target->path }}
+cd {{ $target->root }}
 @foreach ($target->hooks('prep') as $step)
     {{ $step }}
 @endforeach
@@ -92,8 +92,8 @@ download the latest release.
 
 if [[ ! -f "{{ $target->composer }}" ]]
 then
-    echo "Installing composer to {{ $target->path }}."
-    cd {{ $target->path }}
+    echo "Installing composer."
+    cd {{ $target->root }}
     EXPECTED_CHECKSUM="$({{ $target->php }} -r 'copy("https://composer.github.io/installer.sig", "php://stdout");')"
     {{ $target->php }} -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
     ACTUAL_CHECKSUM="$({{ $target->php }} -r "echo hash_file('sha384', 'composer-setup.php');")"
@@ -107,14 +107,14 @@ then
 
     {{ $target->php }} composer-setup.php
 
-    if [ "{{ $target->composer }}" != "{{ $target->path }}/composer.phar" ]
+    if [ "{{ $target->composer }}" != "{{ $target->root }}/composer.phar" ]
     then
         mv composer.phar {{ $target->composer }}
     fi
     rm composer-setup.php
 fi
 
-cd {{ $target->path }}
+cd {{ $target->root }}
 @foreach ($target->hooks('composer') as $step)
     {{ $step }}
 @endforeach
@@ -134,7 +134,7 @@ cd {{ $target->paths('releases', $release) }}
 {{ $target->composer() }} self-update
 {{ $target->composer() }} install {{ $target->composerFlags() }}
 
-cd {{ $target->path }}
+cd {{ $target->root }}
 @foreach ($target->hooks('dependencies') as $step)
     {{ $step }}
 @endforeach
@@ -178,7 +178,7 @@ can turn it on in the config.
     {{ $target->artisan() }} migrate --force
 @endif
 
-cd {{ $target->path }}
+cd {{ $target->root }}
 @foreach ($target->hooks('migrate') as $step)
     {{ $step }}
 @endforeach
@@ -198,7 +198,7 @@ ln -nfs {{ $target->paths('releases', $release) }} {{ $target->paths('serve') }}
 cd {{ $target->paths('serve') }}
 {{ $target->artisan() }} storage:link
 
-cd {{ $target->path }}
+cd {{ $target->root }}
 @foreach ($target->hooks('live') as $step)
     {{ $step }}
 @endforeach
@@ -217,7 +217,7 @@ echo "Cleaning up."
 cd {{ $target->paths('serve') }}
 {{ $target->artisan() }} platoon:cleanup --keep=2
 
-cd {{ $target->path }}
+cd {{ $target->root }}
 @foreach ($target->hooks('cleanup') as $step)
     {{ $step }}
 @endforeach
@@ -234,7 +234,7 @@ This is a good place to restart or reload any required services.
 
 php -r "function_exists('opcache_reset') ? opcache_reset() : null;"
 
-cd {{ $target->path }}
+cd {{ $target->root }}
 @foreach ($target->hooks('finish') as $step)
     {{ $step }}
 @endforeach
