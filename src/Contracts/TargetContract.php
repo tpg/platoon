@@ -7,6 +7,7 @@ namespace TPG\Platoon\Contracts;
 interface TargetContract
 {
     public function __construct(string $name, array $config);
+    public function config(string $key, mixed $default = null): mixed;
     public function paths(string $pathName, string $suffix = null): string;
     public function composer(): string;
     public function composerFlags(): string;
