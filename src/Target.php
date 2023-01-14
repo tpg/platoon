@@ -86,10 +86,6 @@ class Target implements TargetContract
      */
     public function composer(): string
     {
-        if (! $this->config('composer')) {
-            return $this->config('php').' composer.phar';
-        }
-
         if (! str_contains($this->config('composer'), '/')) {
             return $this->config('composer');
         }
