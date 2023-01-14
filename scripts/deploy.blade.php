@@ -107,7 +107,7 @@ then
 
     {{ $target->php }} composer-setup.php
 
-    if [ ! -z "{{ $target->composer }}" ] && [ "{{ $target->composer }}" != "{{ $target->path }}/composer.phar" ]
+    if [ "{{ $target->composer }}" != "{{ $target->path }}/composer.phar" ]
     then
         mv composer.phar {{ $target->composer }}
     fi

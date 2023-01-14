@@ -19,6 +19,7 @@ class Target implements TargetContract
      * @var array<string>
      */
     protected readonly array $extra;
+    protected string $composer;
 
     public function __construct(
         public readonly string $name,
@@ -27,6 +28,9 @@ class Target implements TargetContract
     )
     {
         $this->hostString = $this->getHostString();
+
+        // Default composer.phar install location.
+        $this->composer = $this->config('composer') ?: $this->config('path').'/composer.phar';
     }
 
     public function config(string $key, mixed $default = null): mixed
