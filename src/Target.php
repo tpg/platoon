@@ -30,7 +30,7 @@ class Target implements TargetContract
         $this->hostString = $this->getHostString();
 
         // Default composer.phar install location.
-        $this->composer = $this->config('composer') ?: $this->config('path').'/composer.phar';
+        $this->composer = $this->config('composer') ?: $this->config('root').'/composer.phar';
     }
 
     public function config(string $key, mixed $default = null): mixed
