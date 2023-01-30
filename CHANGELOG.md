@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v1.1.0 - 2023-01-30
+
+This release fixes a number of small bugs that crept into the v1.0 release, mainly around the placement of the `composer.phar` executable.
+
+- The composer install location will now correctly default to the project root.
+- The base directory config should be "root" and not "path". There were some basic config changes that didn't make it into the previous release.
+- Added test support for PHP 8.2.
+
 ## v1.0.0-beta.2 - 2022-12-12
 
 This is just a quick fix for the config validation. Hooks arrays should be nullable.
