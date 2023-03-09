@@ -86,7 +86,7 @@ class ConfigValidator
                 'string',
             ],
             'branch' => [
-                'nullable',
+                'required',
                 'string',
             ],
             'migrate' => [
