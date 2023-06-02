@@ -141,7 +141,6 @@ cd {{ $target->root }}
 
 @endtask
 
-
 {{-- Assets task
 -------------------------------------------------------------------
 Copy the specified assets onto the server. If you specify an
@@ -153,11 +152,6 @@ otherwise you'll get unexpected results.
 echo "Installing assets."
 @foreach ($target->assets($release) as $sourcePath => $targetPath)
     echo "Copying {{ $sourcePath }}."
-    if [[ -d "{{ $sourcePath }}" ]]
-    then
-        echo "Creating target asset path..."
-        ssh {{ $target->hostString }} "mkdir -p {{ $targetPath }}"
-    fi
     scp -P{{ $target->port }} -rq "{{ $sourcePath }}" "{{ $targetPath }}"
 @endforeach
 
