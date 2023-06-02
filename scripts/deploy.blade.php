@@ -155,7 +155,8 @@ echo "Installing assets."
     echo "Copying {{ $sourcePath }}."
     if [[ -d "{{ $sourcePath }}" ]]
     then
-        mkdir -p {{ $targetPath }}
+        echo "Creating target asset path..."
+        ssh {{ $target->hostString }} -P{{ $target->port }} "mkdir -p {{ $targetPath }}"
     fi
     scp -P{{ $target->port }} -rq "{{ $sourcePath }}" "{{ $targetPath }}"
 @endforeach
