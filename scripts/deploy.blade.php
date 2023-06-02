@@ -153,6 +153,10 @@ otherwise you'll get unexpected results.
 echo "Installing assets."
 @foreach ($target->assets($release) as $sourcePath => $targetPath)
     echo "Copying {{ $sourcePath }}."
+    if [[ -d "{{ $sourcePath }}" ]]
+    then
+        mkdir -p {{ $targetPath }}
+    fi
     scp -P{{ $target->port }} -rq "{{ $sourcePath }}" "{{ $targetPath }}"
 @endforeach
 
