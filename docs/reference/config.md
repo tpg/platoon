@@ -210,16 +210,16 @@ With the exception of `build` and `assets`, all tasks are run on the remote serv
 
 | Hook | Where | Description |
 |------|-------|-------------|
-| `build` | local | Empty by default. Use it to run any tasks BEFORE starting the deployment |
-| `install` | remote | Clone the repository into a new release directory |
-| `prep` | remote | Create symbolic links to `.env` and `storage` in the project root |
-| `composer` | remote | Install or update Composer |
-| `dependencies` | remote | Install Composer dependencies |
-| `assets` | local | Copy any specified assets to the remote |
-| `database` | remote | Migrate any database changes |
-| `live` | remote | Create the `live` symbolic link effective making the project live. |
-| `cleanup` | remote | Remove any old releases |
-| `finish` | remote | Run any final deployment tasks |
+| `build` | local | Use it to run any tasks BEFORE starting the deployment |
+| `install` | remote | After the repository is cloned into a new release directory |
+| `prep` | remote | After the symbolic links to `.env` and `storage` are created in the project root |
+| `composer` | remote | Run after the Composer executable is downloaded or updated |
+| `dependencies` | remote | After Composer dependencies have been installed |
+| `assets` | local | After the specified assets have been copied to the remote |
+| `database` | remote | After any database changes have been run |
+| `live` | remote | After the `live` symbolic link is created, effective making the project live. |
+| `cleanup` | remote | After any old releases have been removed |
+| `finish` | remote | Use this to run any final deployment tasks |
 
 All hooks run on the remote target are executed within the project root path.
 
@@ -243,9 +243,11 @@ This way you never have to worry about having the correct paths.
 
 The following tags are provided:
 
-| Tag | Expansion |
-|-----|-----------|
-| `@php` | The full path to the configured PHP binary |
-| `@artisan` | The full path to the artisan script prefixed with the configured PHP binary |
-| `@composer` | The path to the configured composer phar |
-| `@base` | The project base directory |
+| Tag | Expansion                                                                          |
+|-----|------------------------------------------------------------------------------------|
+| `@php` | The full path to the configured PHP binary                                         |
+| `@artisan` | The full path to the artisan script prefixed with the configured PHP binary        |
+| `@composer` | The path to the configured composer phar                                           |
+| `@base` | The project base directory                                                         |
+| `@release` | The ID of the release currently being deployed                                     |
+| `@install` | The path to the current release directory. Same as using `@base/releases/@release` |

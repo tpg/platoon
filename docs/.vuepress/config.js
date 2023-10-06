@@ -1,6 +1,6 @@
-import { defaultTheme } from '@vuepress/theme-default';
+import {defaultTheme} from "vuepress";
 
-module.exports = {
+export default {
     lang: 'en-US',
     title: 'Platoon',
     description: 'Platoon deployment documentation',
@@ -10,7 +10,7 @@ module.exports = {
         navbar: [
             {
                 text: 'Guide',
-                link: '/guide/getting_started.html',
+                link: '/guide/getting_started.md',
             },
             {
                 text: 'Reference',
