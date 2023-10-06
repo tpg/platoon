@@ -91,14 +91,14 @@ class Target implements TargetContract
     public function composer(): string
     {
         if (! $this->config('composer')) {
-            return $this->config('php').' '.$this->config('root').'/composer.phar';
+            return $this->config('php').' -dallow_url_fopen=1 '.$this->config('root').'/composer.phar';
         }
 
         if (! str_contains($this->config('composer'), '/')) {
             return $this->config('composer');
         }
 
-        return $this->config('php').' '.$this->config('composer');
+        return $this->config('php').' -dallow_url_fopen=1 '.$this->config('composer');
     }
 
     /**
