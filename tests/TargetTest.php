@@ -49,7 +49,7 @@ it('will return the fully qualified Composer path', function () {
 
     $target = platoon()->defaultTarget();
 
-    $this->assertSame($target->php.' '.$target->composer, $target->composer());
+    $this->assertSame($target->php.' -dallow_url_fopen=1 '.$target->composer, $target->composer());
 
 });
 
