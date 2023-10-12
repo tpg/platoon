@@ -47,10 +47,6 @@ Platoon does not support password authentication. Your targets MUST be accessibl
 | `hooks` | `[]` | The hooks to run. See [Hooks](#hooks) |
 | `paths` | `[]` | Any changes to directory structure. See [Directory Structure](#directory-structure) |
 
-::: warning Note
-For versions 0.3.4 and older the `root` target option was named `path`. Version 1.0 will validate configuration and you'll get a warning.
-:::
-
 ### Extra options
 It's also possible to include a few additional options to the target config. At the moment, the option extra option supported is `composer-flags`. When running Composer, Platoon will use the following:
 
@@ -73,6 +69,7 @@ return [
                 ],
                 'php-flags' => [
                     '-dmemory_limit=512M',
+                ],
             ],
         ],
     ],
@@ -254,3 +251,7 @@ The following tags are provided:
 | `@base` | The project base directory                                                         |
 | `@release` | The ID of the release currently being deployed                                     |
 | `@install` | The path to the current release directory. Same as using `@base/releases/@release` |
+
+::: warning Warning
+Hooks defined for targets are NOT merged with the common target config. If you define a common hook, and then define the same hook on a target, the target's hook config will override the common config. For this reason, it is recommended that you don't define hooks under `common` unless you have good reason to do so.
+:::
