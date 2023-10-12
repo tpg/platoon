@@ -91,14 +91,19 @@ class Target implements TargetContract
     public function composer(): string
     {
         if (! $this->config('composer')) {
-            return $this->config('php').' -dallow_url_fopen=1 '.$this->config('root').'/composer.phar';
+            return $this->php().' '.$this->config('root').'/composer.phar';
         }
 
         if (! str_contains($this->config('composer'), '/')) {
             return $this->config('composer');
         }
 
-        return $this->config('php').' -dallow_url_fopen=1 '.$this->config('composer');
+        return $this->php().' '.$this->config('composer');
+    }
+
+    public function php(): string
+    {
+        return $this->config('php').' '.$this->phpFlags();
     }
 
     /**
@@ -124,8 +129,22 @@ class Target implements TargetContract
      */
     public function artisan(): string
     {
-        return $this->config('php').' '.$this->paths('serve').'/artisan';
+        return $this->php().' '.$this->paths('serve').'/artisan';
     }
+
+    /**
+     * Get a string of flags to pass to the PHP CLI.
+     *
+     * @return string
+     */
+    public function phpFlags(): string
+    {
+        return implode(' ', [
+            '-dallow_url_fopen=1',
+            ...config('extra.php-flags', []),
+        ]);
+    }
+
 
     /**
      * Get the fully-qualified path to the specified project path.

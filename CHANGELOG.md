@@ -7,16 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## v1.3.2 - 2023-10-06
 
-Fixes to composer dependency install.
-
-## v1.3.1 - 2023-10-06
-
-- Whoops.
+ - Fixes to composer dependency install.
 
 ## v1.3.0 - 2023-10-06
 
-Just a small update to fix an irritating Composer install problem.
-
+- A small update to fix an irritating Composer install problem.
 - Dependency update.
 - Pass `-dallow_url_open=1` to the PHP cli when installing composer.
 

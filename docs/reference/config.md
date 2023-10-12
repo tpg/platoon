@@ -52,13 +52,14 @@ For versions 0.3.4 and older the `root` target option was named `path`. Version 
 :::
 
 ### Extra options
-It's also possible to include a few additional options to the target config. At the moment, the option extra option supported is `composer-flags`. When running Composer, Platoon will run the following:
+It's also possible to include a few additional options to the target config. At the moment, the option extra option supported is `composer-flags`. When running Composer, Platoon will use the following:
 
 ```shell
 composer install --prefer-dist --no-dev --no-progress -optimize-autoloader
 ```
+In addition, the `-dallow_url_fopen=1` option is always passed to the PHP executable.
 
-If you ever needed to change the flags passed to the Composer CLI, you can use the `extra.composer-flag` option:
+If you ever needed to add additional flags to the Composer or PHP CLI, you can use the `extra.composer-flags` and `extra.php-flags` options:
 
 ```php
 return [
@@ -70,6 +71,8 @@ return [
                     '--dev',
                     '--optimize-autoloader',
                 ],
+                'php-flags' => [
+                    '-dmemory_limit=512M',
             ],
         ],
     ],
@@ -77,7 +80,7 @@ return [
 ```
 
 ::: tip Note
-The `--no-progress` flag is always set.
+The `--no-progress` flag is always passed to Composer, and the `-dallow_url_fopen=1` option is always set on the PHP CLI.
 :::
 
 ## Directory structure

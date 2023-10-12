@@ -77,7 +77,7 @@ it('will return a string of custom composer flags', function () {
 it('will return the fully qualified Artisan path', function () {
     $target = platoon()->defaultTarget();
 
-    $this->assertSame($target->php.' '.$target->paths('serve').'/artisan', $target->artisan(true));
+    $this->assertSame($target->php.' -dallow_url_fopen=1 '.$target->paths('serve').'/artisan', $target->artisan(true));
 
 });
 
