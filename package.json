@@ -7,7 +7,7 @@
   "author": "THEPUBLICGOOD <makers@thepublicgood.dev>",
   "license": "MIT",
   "devDependencies": {
-    "vuepress": "^2.0.0-beta.62"
+    "vuepress": "^2.0.0-beta.67"
   },
   "scripts": {
     "docs:dev": "vuepress dev docs",
