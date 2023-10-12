@@ -61,6 +61,12 @@ it('will return a string of default composer flags', function () {
 
 });
 
+it('will return a string of default php flags', function () {
+    $target = platoon()->defaultTarget();
+
+    $this->assertSame('-dallow_url_fopen=1', $target->phpFlags());
+});
+
 it('will return a string of custom composer flags', function () {
 
     config(['platoon.targets.staging.extra.composer-flags' => [
