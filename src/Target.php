@@ -141,7 +141,7 @@ class Target implements TargetContract
     {
         return implode(' ', [
             '-dallow_url_fopen=1',
-            ...config('extra.php-flags', []),
+            ...$this->config('extra.php-flags', []),
         ]);
     }
 
