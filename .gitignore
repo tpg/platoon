@@ -4,4 +4,5 @@ node_modules
 docs/.vuepress/.temp
 docs/.vuepress/.cache
 docs/.vuepress/dist
+.phpunit.cache
 .phpunit.result.cache
