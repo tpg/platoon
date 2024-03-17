@@ -41,7 +41,7 @@ class Platoon implements PlatoonContract
      */
     public function target(string $name, ?string $release = null): Target
     {
-        $data = array_merge($this->common(), Arr::get($this->config, 'targets.'.$name));
+        $data = array_replace_recursive($this->common(), Arr::get($this->config, 'targets.'.$name));
 
         return new Target($name, [
             ...$data,
