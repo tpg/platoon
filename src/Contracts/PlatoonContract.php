@@ -37,7 +37,7 @@ interface PlatoonContract
     /**
      * @return array<string, string>|string|null
      */
-    public function paths(string $key = null, string $suffix = null): array|string|null;
+    public function paths(string $key = null, ?string $suffix = null): array|string|null;
 
     /**
      * Get the list of existing releases.
@@ -87,5 +87,5 @@ interface PlatoonContract
      * @param  Closure|null  $cb
      * @return void
      */
-    public function runEnvoy(string $target, string $task, array $options = [], Closure $cb = null): void;
+    public function runEnvoy(string $target, string $task, array $options = [], ?Closure $cb = null): void;
 }

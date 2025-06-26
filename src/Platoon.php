@@ -14,7 +14,7 @@ class Platoon implements PlatoonContract
 {
     protected array $config;
 
-    public function __construct(array $config = null)
+    public function __construct(?array $config = null)
     {
         $this->config = $config ?? config('platoon');
     }
@@ -78,7 +78,7 @@ class Platoon implements PlatoonContract
     /**
      * @return array<string, string>|string|null
      */
-    public function paths(string $key = null, string $suffix = null): array|string|null
+    public function paths(?string $key = null, ?string $suffix = null): array|string|null
     {
         $paths = [
             'releases' => 'releases',
@@ -165,7 +165,7 @@ class Platoon implements PlatoonContract
         return $exec.' run '.$task.' --conf='.$script.' --server='.$target.' '.$ext;
     }
 
-    public function runEnvoy(string $target, string $task, array $options = [], \Closure $cb = null): void
+    public function runEnvoy(string $target, string $task, array $options = [], ?\Closure $cb = null): void
     {
         $command = $this->getEnvoyCommand($target, $task, $options);
 

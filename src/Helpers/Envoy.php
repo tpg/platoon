@@ -53,7 +53,7 @@ class Envoy
         return Arr::get($this->config, 'repo');
     }
 
-    public function newRelease(string $prefix = null, string $suffix = null): string
+    public function newRelease(?string $prefix = null, ?string $suffix = null): string
     {
         date_default_timezone_set('UTC');
         return $this->release = $prefix.date('YmdHis').$suffix;

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace TPG\Platoon;
 
 use Illuminate\Support\Arr;
-use Spatie\LaravelData\Data;
 use TPG\Platoon\Contracts\TargetContract;
 
 class Target implements TargetContract
@@ -66,7 +65,7 @@ class Target implements TargetContract
      * @param  string|null  $suffix
      * @return string
      */
-    public function paths(string $pathName, string $suffix = null): string
+    public function paths(string $pathName, ?string $suffix = null): string
     {
         $paths = $this->config('paths');
 
