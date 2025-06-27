@@ -126,8 +126,12 @@ class Target implements TargetContract
      *
      * @return string
      */
-    public function artisan(): string
+    public function artisan(?string $release = null): string
     {
+        if ($release) {
+            return $this->php().' '.$this->paths('releases', $release).'/artisan';
+        }
+
         return $this->php().' '.$this->paths('serve').'/artisan';
     }
 

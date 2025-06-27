@@ -80,13 +80,6 @@ it('will return a string of custom composer flags', function () {
 
 });
 
-it('will return the fully qualified Artisan path', function () {
-    $target = platoon()->defaultTarget();
-
-    $this->assertSame($target->php.' -dallow_url_fopen=1 '.$target->paths('serve').'/artisan', $target->artisan(true));
-
-});
-
 it('will throw an exception if the path name doesnt exist', function () {
     $target = platoon()->defaultTarget();
 
@@ -107,4 +100,20 @@ it('will return an array of assets ready for scp', function () {
     $this->assertSame([
         'localasset.test' => $target->username.'@'.$target->host.':'.$target->paths('releases', '12345').'/remoteasset.test',
     ], $assets);
+});
+
+it('will return the full artisan executable path', function () {
+
+    $target = platoon()->defaultTarget();
+
+    $php = $target->php();
+
+    $this->assertSame([
+        $php.' '.$target->paths('serve').'/artisan',
+        $php.' '.$target->paths('releases').'/test-release/artisan',
+    ], [
+        $target->artisan(),
+        $target->artisan('test-release')]
+    );
+
 });

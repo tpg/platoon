@@ -13,7 +13,7 @@ interface TargetContract
     public function php(): string;
     public function composerFlags(): string;
     public function phpFlags(): string;
-    public function artisan(): string;
+    public function artisan(?string $release = null): string;
     public function assets(string $release): array;
     public function hooks(string $step): array;
 }

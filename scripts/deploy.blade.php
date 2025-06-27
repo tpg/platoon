@@ -174,7 +174,7 @@ can turn it on in the config.
 @if ($target->migrate)
     echo "Running database migrations."
     cd {{ $target->paths('releases', $release) }}
-    {{ $target->artisan() }} migrate --force
+    {{ $target->artisan($release) }} migrate --force
 @endif
 
 cd {{ $target->root }}
