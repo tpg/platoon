@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v2.1.2 - 2025-06-27
+
+This release fixes a bug where database migrations were being run from the "live" symlink instead of the release directory. This means new database migrations were not being effective until a second deployment was completed.
+
+The `Target::artisan()` method now takes a string value of the release directory now to ensure that migrations are run BEFORE the "live" task.
+
 ## v2.1.1 - 2025-06-26
 
 Fixes for a few PHP 8.4 deprecations.
