@@ -7,6 +7,12 @@ A simple Laravel package designed to make deployments dead simple.
 - Highly customizable.
 - Zero-downtime out-of-the-box.
 
+> This project is being deprecated in favour of a new version being written in Go. Currently named "platoon-go", it will remove the requirement of
+> having another dependency in your project. This project will remain supported until the next major version of Laravel (14) is released, at which point
+> you will need to migrate to the new version.
+> 
+> The new project can be found [here](https://github.com/warrickbayman/platoon-go).
+
 ## Installation
 Install Platoon into your project using Composer:
 
