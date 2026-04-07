@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v3.0.0 - 2026-04-07
+
+Just some support updates. No new features.
+
+This will likely be the last major release of Platoon PHP. It's currently being rewritten as a standalone app in Go so will no longer be required as a dependency.
+
+- Support for Laravel 13 added.
+- Dropped support for Laravel 10.
+- Dropped support for PHP 8.2.
+- Updates dependencies for PHPUnit and Pest.
+
 ## v2.1.2 - 2025-06-27
 
 This release fixes a bug where database migrations were being run from the "live" symlink instead of the release directory. This means new database migrations were not being effective until a second deployment was completed.
