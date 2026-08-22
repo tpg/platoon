@@ -51,17 +51,32 @@ class Target implements TargetContract
             return $connect;
         }
 
+        $jumpConfig = $this->jumpConfig();
+
         $username = $this->config('username');
         $host = $this->config('host');
-        $port = $this->config('port');
+        $port = $this->config('port', 22);
 
-        $parts = [
-            $username ? $username.'@' : null,
-            $host,
-            $port ? ' -p'.$port : '',
+        if ($jumpConfig) {
+            return "-p $port $username@$host";
+        }
+
+        return "$jumpConfig $username@$host:$port";
+    }
+
+    protected function jumpConfig(): ?string
+    {
+        if (! $this->config('jump_host')) {
+            return null;
+        }
+
+        $jumpParts = [
+            $this->config('jump_username') ? $this->config('jump_username').'@' : '',
+            $this->config('jump_host'),
+            $this->config('jump_port') ? ':'.$this->config('jump_port') : '',
         ];
 
-        return implode('', $parts);
+        return implode('', $jumpParts);
     }
 
     /**

@@ -68,6 +68,18 @@ class ConfigValidator
                 'nullable',
                 'string',
             ],
+            'jump_host' => [
+                'nullable',
+                'string',
+            ],
+            'jump_port' => [
+                'nullable',
+                'integer',
+            ],
+            'jump_username' => [
+                'nullable',
+                'string',
+            ],
             'host' => [
                 'nullable',
                 'string',
