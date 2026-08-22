@@ -69,7 +69,7 @@ class ConfigValidator
                 'string',
             ],
             'host' => [
-                $isCommon ? 'nullable' : 'required',
+                'nullable',
                 'string',
             ],
             'port' => [
