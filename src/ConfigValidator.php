@@ -5,15 +5,18 @@ declare(strict_types=1);
 namespace TPG\Platoon;
 
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Validator as ValidatorFacade;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 
 class ConfigValidator
 {
+    protected Validator $validator;
+
     public function __construct(protected readonly array $config)
     {
-        $this->validator = Validator::make($this->config, $this->rules());
+        $this->validator = ValidatorFacade::make($this->config, $this->rules());
     }
 
     public function validate(): bool
@@ -42,7 +45,7 @@ class ConfigValidator
                 'nullable',
             ],
             'targets.*' => [
-                'array:host,port,username,root,php,composer,branch,migrate,assets,hooks,extra',
+                'array:connect,host,port,username,root,php,composer,branch,migrate,assets,hooks,extra',
                 'min:1',
             ],
             'targets.*.*' => Rule::forEach(function ($value, $attribute) {
@@ -61,6 +64,10 @@ class ConfigValidator
     protected function targetRule(string $key, bool $isCommon = false): array
     {
         return Arr::get([
+            'connect' => [
+                'nullable',
+                'string',
+            ],
             'host' => [
                 $isCommon ? 'nullable' : 'required',
                 'string',

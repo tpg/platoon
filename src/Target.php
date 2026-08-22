@@ -45,6 +45,12 @@ class Target implements TargetContract
      */
     protected function getHostString(): string
     {
+        $connect = $this->config('connect');
+
+        if ($connect) {
+            return $connect;
+        }
+
         $username = $this->config('username');
         $host = $this->config('host');
         $port = $this->config('port');
