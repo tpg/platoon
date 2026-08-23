@@ -61,7 +61,7 @@ class Target implements TargetContract
         $host = $this->config('host');
         $port = $this->config('port', 22);
 
-        if ($jumpConfig) {
+        if (! $jumpConfig) {
             return "-p $port $username@$host";
         }
 
