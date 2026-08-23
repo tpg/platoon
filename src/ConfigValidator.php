@@ -45,7 +45,7 @@ class ConfigValidator
                 'nullable',
             ],
             'targets.*' => [
-                'array:connect,jump_host,jump_port,jump_username,host,port,username,root,php,composer,branch,migrate,assets,hooks,extra',
+                'array:connect,jump,host,port,username,root,php,composer,branch,migrate,assets,hooks,extra',
                 'min:1',
             ],
             'targets.*.*' => Rule::forEach(function ($value, $attribute) {
@@ -68,15 +68,19 @@ class ConfigValidator
                 'sometimes',
                 'string',
             ],
-            'jump_host' => [
+            'jump' => [
+                'sometimes',
+                'array:host,port,username',
+            ],
+            'jump.host' => [
                 'sometimes',
                 'string',
             ],
-            'jump_port' => [
+            'jump.port' => [
                 'sometimes',
                 'integer',
             ],
-            'jump_username' => [
+            'jump.username' => [
                 'sometimes',
                 'string',
             ],

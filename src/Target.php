@@ -39,7 +39,7 @@ class Target implements TargetContract
 
     public function hasJumpHost(): bool
     {
-        return $this->config('jump_host') !== null;
+        return $this->config('jump.host') !== null;
     }
 
     /**
@@ -70,14 +70,14 @@ class Target implements TargetContract
 
     protected function jumpConfig(): ?string
     {
-        if (! $this->config('jump_host')) {
+        if (! $this->config('jump.host')) {
             return null;
         }
 
         $jumpParts = [
-            $this->config('jump_username') ? $this->config('jump_username').'@' : '',
-            $this->config('jump_host'),
-            $this->config('jump_port') ? ':'.$this->config('jump_port') : '',
+            $this->config('jump.username') ? $this->config('jump.username').'@' : '',
+            $this->config('jump.host'),
+            $this->config('jump.port') ? ':'.$this->config('jump.port') : '',
         ];
 
         return implode('', $jumpParts);
