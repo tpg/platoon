@@ -45,7 +45,7 @@ class ConfigValidator
                 'nullable',
             ],
             'targets.*' => [
-                'array:connect,host,port,username,root,php,composer,branch,migrate,assets,hooks,extra',
+                'array:connect,jump_host,jump_port,jump_username,host,port,username,root,php,composer,branch,migrate,assets,hooks,extra',
                 'min:1',
             ],
             'targets.*.*' => Rule::forEach(function ($value, $attribute) {
@@ -65,43 +65,43 @@ class ConfigValidator
     {
         return Arr::get([
             'connect' => [
-                'nullable',
+                'sometimes',
                 'string',
             ],
             'jump_host' => [
-                'nullable',
+                'sometimes',
                 'string',
             ],
             'jump_port' => [
-                'nullable',
+                'sometimes',
                 'integer',
             ],
             'jump_username' => [
-                'nullable',
+                'sometimes',
                 'string',
             ],
             'host' => [
-                'nullable',
+                'sometimes',
                 'string',
             ],
             'port' => [
-                'nullable',
+                'sometimes',
                 'integer',
             ],
             'username' => [
-                $isCommon ? 'nullable' : 'required',
+                $isCommon ? 'sometimes' : 'required',
                 'string',
             ],
             'root' => [
-                $isCommon ? 'nullable' : 'required',
+                $isCommon ? 'sometimes' : 'required',
                 'string',
             ],
             'php' => [
-                'nullable',
+                'sometimes',
                 'string',
             ],
             'composer' => [
-                'nullable',
+                'sometimes',
                 'string',
             ],
             'branch' => [
@@ -109,23 +109,23 @@ class ConfigValidator
                 'string',
             ],
             'migrate' => [
-                'nullable',
+                'sometimes',
                 'boolean',
             ],
             'assets' => [
-                'nullable',
+                'sometimes',
                 'array',
             ],
             'hooks' => [
-                'nullable',
+                'sometimes',
                 'array',
             ],
             'hooks.*' => [
-                'nullable',
+                'sometimes',
                 'array'
             ],
             'extra' => [
-                'nullable',
+                'sometimes',
                 'array',
             ]
         ], $key);
