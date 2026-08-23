@@ -65,7 +65,7 @@ class Target implements TargetContract
             return "-p $port $username@$host";
         }
 
-        return "$jumpConfig $username@$host:$port";
+        return "-p $port -J $jumpConfig $username@$host";
     }
 
     protected function jumpConfig(): ?string
