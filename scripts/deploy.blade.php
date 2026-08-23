@@ -153,7 +153,7 @@ echo "Installing assets."
 @foreach ($target->assets($release) as $sourcePath => $targetPath)
     echo "Copying {{ $sourcePath }}."
     @if ($target->hasJumpHost())
-        scp -P {{ $target->port }} -J {{ $target->hostString }} -rq "{{ $sourcePath }}" "{{ $targetPath }}"
+        scp -P {{ $target->port }} -J {{ $target->jumpConfig }} -rq "{{ $sourcePath }}" "{{ $targetPath }}"
     @else
         scp -P {{ $target->port }} -rq "{{ $sourcePath }}" "{{ $targetPath }}"
     @endif

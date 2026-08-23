@@ -68,7 +68,7 @@ class Target implements TargetContract
         return "-p $port -J $jumpConfig $username@$host";
     }
 
-    protected function jumpConfig(): ?string
+    public function jumpConfig(): ?string
     {
         if (! $this->config('jump.host')) {
             return null;
