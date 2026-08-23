@@ -37,6 +37,10 @@ class Target implements TargetContract
         return Arr::get($this->config, $key, $default);
     }
 
+    public function hasJumpHost(): bool
+    {
+        return $this->config('jump_host') !== null;
+    }
 
     /**
      * Get the complete host connection string

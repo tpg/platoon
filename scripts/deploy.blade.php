@@ -152,7 +152,11 @@ otherwise you'll get unexpected results.
 echo "Installing assets."
 @foreach ($target->assets($release) as $sourcePath => $targetPath)
     echo "Copying {{ $sourcePath }}."
-    scp -P{{ $target->port }} -rq "{{ $sourcePath }}" "{{ $targetPath }}"
+    @if ($target->hasJumpHost())
+        scp -J {{ $target->hostString }} -rq "{{ $sourcePath }}" "{{ $targetPath }}"
+    @else
+        scp -P{{ $target->port }} -rq "{{ $sourcePath }}" "{{ $targetPath }}"
+    @endif
 @endforeach
 
 @foreach ($target->hooks('assets') as $step)
