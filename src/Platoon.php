@@ -25,7 +25,7 @@ class Platoon implements PlatoonContract
     }
 
     /**
-     * @return Collection<Target>
+     * @return Collection<int, Target>
      */
     public function targets(): Collection
     {

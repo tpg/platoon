@@ -37,7 +37,7 @@ interface PlatoonContract
     /**
      * @return array<string, string>|string|null
      */
-    public function paths(string $key = null, ?string $suffix = null): array|string|null;
+    public function paths(?string $key = null, ?string $suffix = null): array|string|null;
 
     /**
      * Get the list of existing releases.
